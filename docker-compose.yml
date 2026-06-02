@@ -1,0 +1,15 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_USER: pln
+      POSTGRES_PASSWORD: pln_dev_password
+      POSTGRES_DB: profitable_living_network
+    volumes:
+      - pln_postgres_data:/var/lib/postgresql/data
+
+volumes:
+  pln_postgres_data:

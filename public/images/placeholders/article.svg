@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" role="img" aria-label="Article cover placeholder">
+  <rect width="1200" height="900" fill="#0b1426"/>
+  <rect x="80" y="80" width="1040" height="740" fill="#152238" stroke="#c9a227" stroke-width="2" opacity="0.6"/>
+  <text x="600" y="470" text-anchor="middle" fill="#c9a227" font-family="system-ui,sans-serif" font-size="28" letter-spacing="0.15em">TEACHING PREVIEW</text>
+</svg>

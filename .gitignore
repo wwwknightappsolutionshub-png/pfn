@@ -39,3 +39,13 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# payload uploads (keep folder)
+/media/*
+!/media/.gitkeep
+
+# local sqlite database
+/data/
+!/data/.gitkeep
+
+scripts/.tmp-images/

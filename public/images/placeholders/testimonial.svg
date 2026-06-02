@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" role="img" aria-label="Testimonial avatar placeholder">
+  <rect width="400" height="400" fill="#152238"/>
+  <circle cx="200" cy="180" r="72" fill="#c9a227" opacity="0.35"/>
+  <ellipse cx="200" cy="320" rx="100" ry="70" fill="#c9a227" opacity="0.2"/>
+</svg>
