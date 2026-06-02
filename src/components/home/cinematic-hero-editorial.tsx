@@ -66,6 +66,8 @@ type HeroRightPanelProps = {
   panelBody: string;
   panelExtra?: ReactNode;
   showAboutLink?: boolean;
+  /** Where to anchor crop on desktop; mobile shows the full image */
+  imageFocus?: "center" | "top";
 };
 
 function HeroRightPanel({
@@ -77,7 +79,11 @@ function HeroRightPanel({
   panelBody,
   panelExtra,
   showAboutLink,
+  imageFocus = "center",
 }: HeroRightPanelProps) {
+  const desktopObjectPosition =
+    imageFocus === "top" ? "object-[center_15%]" : "object-center";
+
   return (
     <motion.div
       className="group relative flex w-full cursor-default flex-col overflow-hidden rounded-xl border border-pln-gold/25 lg:min-h-full lg:rounded-none"
@@ -87,19 +93,26 @@ function HeroRightPanel({
       variants={panelVariants}
       transition={panelHoverTransition}
     >
-      {/* Image — fixed portrait frame on mobile/tablet; full bleed on desktop */}
-      <div className="relative aspect-[4/5] w-full shrink-0 sm:aspect-[3/4] md:max-lg:aspect-[4/5] lg:absolute lg:inset-0 lg:aspect-auto lg:min-h-full">
+      {/* Image — full photo on mobile/tablet; cinematic crop on desktop */}
+      <div className="relative h-[min(58vh,520px)] min-h-[300px] w-full shrink-0 overflow-hidden bg-pln-navy sm:h-[min(62vh,580px)] sm:min-h-[340px] md:max-lg:h-[min(64vh,620px)] lg:absolute lg:inset-0 lg:h-auto lg:min-h-full">
         <Image
           src={imageSrc}
           alt={imageAlt}
           fill
-          className="object-cover object-[center_20%] transition duration-700 max-lg:object-[center_18%] lg:object-center lg:group-hover:scale-[1.03]"
+          className={cn(
+            "object-contain object-center max-lg:object-contain",
+            imageFocus === "top" && "max-lg:object-top",
+            "lg:object-cover",
+            desktopObjectPosition,
+            "transition duration-700 lg:group-hover:scale-[1.03]",
+          )}
           sizes="(max-width: 1024px) 100vw, 42vw"
           priority={slideIndex === 0}
         />
 
-        <div className="absolute inset-0 bg-gradient-to-l from-pln-navy/50 via-transparent to-transparent lg:from-pln-navy/80 lg:via-pln-navy/35 lg:to-pln-navy/15" />
-        <div className="absolute inset-0 bg-gradient-to-t from-pln-navy/95 via-pln-navy/25 to-transparent lg:from-pln-navy lg:via-pln-navy/50" />
+        {/* Desktop-only overlays — caption sits below image on smaller screens */}
+        <div className="pointer-events-none absolute inset-0 hidden bg-gradient-to-l from-pln-navy/80 via-pln-navy/35 to-pln-navy/15 lg:block" />
+        <div className="pointer-events-none absolute inset-0 hidden bg-gradient-to-t from-pln-navy via-pln-navy/50 to-transparent lg:block" />
 
         <motion.div
           className="pointer-events-none absolute inset-0 hidden bg-[radial-gradient(ellipse_at_80%_0%,rgba(201,162,39,0.18),transparent_55%)] lg:block"
@@ -439,7 +452,7 @@ export function CinematicHeroEditorial({
 
                   {/* Right column — portrait / preview image */}
                   <motion.div
-                    className="flex w-full max-lg:mx-auto max-lg:max-w-lg md:max-lg:max-w-xl lg:col-span-6 lg:min-h-[min(72vh,680px)]"
+                    className="flex w-full max-lg:mx-auto max-lg:max-w-2xl lg:col-span-6 lg:min-h-[min(72vh,680px)]"
                     variants={columnEnter.right}
                     initial="hidden"
                     animate={isActive ? "visible" : "hidden"}
@@ -453,6 +466,7 @@ export function CinematicHeroEditorial({
                       panelBody={slide.panelBody}
                       panelExtra={slide.panelExtra}
                       showAboutLink={slide.id === "gather"}
+                      imageFocus={slide.id === "gather" ? "top" : "center"}
                     />
                   </motion.div>
                 </div>
