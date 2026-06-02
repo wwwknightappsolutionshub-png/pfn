@@ -8,7 +8,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { motion } from "framer-motion";
 import { ArrowRight, ChevronLeft, ChevronRight, Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { PLACEHOLDER_IMAGES } from "@/lib/placeholders";
+import type { HeroSlideImages } from "@/lib/hero-images";
 import { cn } from "@/lib/utils";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -80,7 +80,7 @@ function HeroRightPanel({
 }: HeroRightPanelProps) {
   return (
     <motion.div
-      className="group relative flex min-h-[440px] w-full cursor-default flex-col overflow-hidden border border-pln-gold/25 lg:min-h-full"
+      className="group relative flex min-h-[280px] w-full cursor-default flex-col overflow-hidden border border-pln-gold/25 sm:min-h-[360px] lg:min-h-full"
       initial="rest"
       whileHover="hover"
       animate="rest"
@@ -128,7 +128,7 @@ function HeroRightPanel({
         transition={panelHoverTransition}
       />
 
-      <div className="relative z-10 mt-auto flex flex-col bg-pln-navy/75 p-8 backdrop-blur-md lg:p-10">
+      <div className="relative z-10 mt-auto flex flex-col bg-pln-navy/75 p-5 backdrop-blur-md sm:p-6 lg:p-10">
         <motion.p
           className="font-sans text-xs uppercase tracking-[0.3em] text-pln-gold"
           variants={{ rest: { letterSpacing: "0.3em" }, hover: { letterSpacing: "0.38em" } }}
@@ -166,6 +166,7 @@ type Props = {
   headline: string;
   subheadline: string;
   channelUrl?: string | null;
+  heroImages: HeroSlideImages;
 };
 
 const pillars = [
@@ -193,6 +194,7 @@ export function CinematicHeroEditorial({
   headline,
   subheadline,
   channelUrl,
+  heroImages,
 }: Props) {
   const sectionRef = useRef<HTMLElement>(null);
   const [active, setActive] = useState(0);
@@ -204,13 +206,13 @@ export function CinematicHeroEditorial({
       kicker: "Profitable Living Network",
       title: headline,
       description: subheadline,
-      imageSrc: PLACEHOLDER_IMAGES.article,
-      imageAlt: "Teaching and wisdom",
+      imageSrc: heroImages.mission.src,
+      imageAlt: heroImages.mission.alt,
       panelTitle: "Godly wisdom. Profitable life.",
       panelBody:
         "A Christian mission teaching how to live with excellence in every sphere — rooted in Scripture and proven in experience.",
       panelExtra: (
-        <div className="mt-8 grid grid-cols-3 gap-4 border-t border-pln-ivory/10 pt-8">
+        <div className="mt-6 grid grid-cols-1 gap-4 border-t border-pln-ivory/10 pt-6 sm:mt-8 sm:grid-cols-3 sm:gap-4 sm:pt-8">
           {[
             { label: "Weekly", value: "Wisdom Snippets" },
             { label: "Monthly", value: "School of Wisdom" },
@@ -232,8 +234,8 @@ export function CinematicHeroEditorial({
       title: "Six pillars. One integrated life in Christ.",
       description:
         "Practical teaching across relationships, business, finance, career, health, and spiritual growth — connected, intentional, and transformative.",
-      imageSrc: PLACEHOLDER_IMAGES.journey.grow,
-      imageAlt: "Wisdom for everyday living",
+      imageSrc: heroImages.pillars.src,
+      imageAlt: heroImages.pillars.alt,
       panelTitle: "The constellation of wisdom",
       panelBody:
         "Each area of life informs the others. PLN helps you apply godly principles with clarity and confidence.",
@@ -256,8 +258,8 @@ export function CinematicHeroEditorial({
       title: "Learn. Apply. Grow. Influence. Impact.",
       description:
         "Every Monday — Wisdom Snippets. Third Friday monthly — School of Wisdom. Step into a community pursuing godliness with purpose.",
-      imageSrc: PLACEHOLDER_IMAGES.portrait,
-      imageAlt: "Peter Olusanjo",
+      imageSrc: heroImages.gather.src,
+      imageAlt: heroImages.gather.alt,
       panelTitle: "Led by Peter Olusanjo",
       panelBody:
         "Speaker, teacher, and scholar — equipping believers to flourish with academic rigour and pastoral depth.",
@@ -317,6 +319,8 @@ export function CinematicHeroEditorial({
       className="relative min-h-[100svh] overflow-hidden bg-pln-navy text-pln-ivory"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
+      onTouchStart={() => setPaused(true)}
+      onTouchEnd={() => setPaused(false)}
       aria-roledescription="carousel"
       aria-label="Featured messages"
     >
@@ -330,7 +334,7 @@ export function CinematicHeroEditorial({
             backgroundSize: "64px 64px",
           }}
         />
-        <div className="absolute -right-32 top-1/4 h-[520px] w-[520px] rounded-full border border-pln-gold/15" />
+        <div className="absolute -right-16 top-1/4 h-[280px] w-[280px] rounded-full border border-pln-gold/15 sm:-right-32 sm:h-[400px] sm:w-[400px] lg:h-[520px] lg:w-[520px]" />
         <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-pln-navy to-transparent" />
       </div>
 
@@ -346,10 +350,10 @@ export function CinematicHeroEditorial({
             return (
               <div
                 key={slide.id}
-                className="flex min-h-[100svh] w-full flex-shrink-0 items-center px-6 py-28 lg:px-10 lg:py-32"
+                className="flex min-h-[100svh] w-full flex-shrink-0 items-center px-4 py-20 sm:px-6 sm:py-24 lg:px-10 lg:py-32"
                 aria-hidden={!isActive}
               >
-                <div className="mx-auto grid w-full max-w-7xl items-stretch gap-10 lg:grid-cols-12 lg:gap-10 xl:gap-14">
+                <div className="mx-auto grid w-full max-w-7xl items-stretch gap-8 sm:gap-10 lg:grid-cols-12 lg:gap-10 xl:gap-14">
                   {/* Left column — shifted toward centre */}
                   <motion.div
                     className="flex flex-col justify-center lg:col-span-6 xl:col-span-6"
@@ -367,7 +371,7 @@ export function CinematicHeroEditorial({
                       {slide.title}
                     </h1>
 
-                    <p className="mt-8 max-w-xl font-body text-lg leading-relaxed text-pln-ivory/75 lg:text-xl">
+                    <p className="mt-6 max-w-xl font-body text-base leading-relaxed text-pln-ivory/75 sm:mt-8 sm:text-lg lg:text-xl">
                       {slide.description}
                     </p>
 
@@ -455,8 +459,8 @@ export function CinematicHeroEditorial({
       </div>
 
       {/* Controls */}
-      <div className="absolute bottom-10 left-0 right-0 z-20 px-6 lg:px-10">
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-6">
+      <div className="absolute bottom-6 left-0 right-0 z-20 px-4 pb-safe sm:bottom-8 sm:px-6 lg:bottom-10 lg:px-10">
+        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4 sm:gap-6">
           <div className="flex items-center gap-3">
             {slides.map((slide, i) => (
               <button

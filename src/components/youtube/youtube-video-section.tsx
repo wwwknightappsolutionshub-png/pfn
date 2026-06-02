@@ -32,13 +32,13 @@ export function YoutubeVideoSection({
     <section
       className={
         isDark
-          ? "bg-pln-navy py-28 text-pln-ivory lg:py-40"
+          ? "bg-pln-navy pln-section text-pln-ivory"
           : isLight
-            ? "py-20 lg:py-28"
-            : "border-y border-pln-charcoal/10 py-28 dark:border-pln-ivory/10 lg:py-40"
+            ? "pln-section-tight"
+            : "border-y border-pln-charcoal/10 pln-section dark:border-pln-ivory/10"
       }
     >
-      <div className="mx-auto max-w-7xl px-6 lg:px-10">
+      <div className="pln-container">
         <p
           className={`font-sans text-xs font-semibold uppercase tracking-[0.35em] ${
             isLight ? "text-pln-gold-on-light" : "text-pln-gold"
@@ -47,9 +47,9 @@ export function YoutubeVideoSection({
           {sectionLabel}
         </p>
         <h2
-          className={`mt-5 max-w-2xl font-display text-4xl font-extrabold leading-tight lg:text-5xl ${
+          className={`mt-4 max-w-2xl pln-section-title sm:mt-5 ${
             isLight
-              ? "border-l-4 border-pln-gold-on-light pl-6 text-pln-section-light-heading"
+              ? "border-l-4 border-pln-gold-on-light pl-4 text-pln-section-light-heading sm:pl-6"
               : ""
           }`}
         >
@@ -57,7 +57,7 @@ export function YoutubeVideoSection({
         </h2>
         {subtitle && (
           <p
-            className={`mt-6 max-w-xl font-body text-lg leading-relaxed ${
+            className={`mt-4 max-w-xl font-body text-base leading-relaxed sm:mt-6 sm:text-lg ${
               isDark
                 ? "text-pln-ivory/70"
                 : isLight
@@ -68,7 +68,7 @@ export function YoutubeVideoSection({
             {subtitle}
           </p>
         )}
-        <div className="mt-14">
+        <div className="mt-10 sm:mt-12 lg:mt-14">
           <YoutubeVideoGrid
             videos={videos}
             channelUrl={channelUrl}

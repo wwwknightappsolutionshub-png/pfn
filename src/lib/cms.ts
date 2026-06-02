@@ -11,6 +11,10 @@ import type {
   YoutubeVideo,
 } from "@/payload-types";
 import type { YoutubeVideoItem } from "@/lib/youtube";
+import {
+  isLegacyDemoYoutubeCatalog,
+  mapPeterYoutubeVideos,
+} from "@/lib/peter-youtube-videos";
 
 function mapYoutube(docs: YoutubeVideo[]): YoutubeVideoItem[] {
   return docs.map((v) => ({
@@ -43,7 +47,10 @@ export async function getHomepageData(): Promise<{
 
   try {
     const payload = await getPayloadClient();
-    const homepage = (await payload.findGlobal({ slug: "homepage" })) as Homepage;
+    const homepage = (await payload.findGlobal({
+      slug: "homepage",
+      depth: 2,
+    })) as Homepage;
 
     const featuredIds = (homepage.featuredArticles || [])
       .map((a) => (typeof a === "number" ? a : a.id))
@@ -148,17 +155,22 @@ export async function getFeaturedYoutubeVideos(
       sort: "order",
       limit,
     });
-    if (res.docs.length) return mapYoutube(res.docs as YoutubeVideo[]);
+    const mapped = mapYoutube(res.docs as YoutubeVideo[]);
+    if (mapped.length && !isLegacyDemoYoutubeCatalog(mapped)) return mapped;
 
     const all = await payload.find({
       collection: "youtube-videos",
       sort: "order",
       limit,
     });
-    return mapYoutube(all.docs as YoutubeVideo[]);
+    const allMapped = mapYoutube(all.docs as YoutubeVideo[]);
+    if (allMapped.length && !isLegacyDemoYoutubeCatalog(allMapped)) {
+      return allMapped;
+    }
   } catch {
-    return [];
+    /* fall through to Peter's channel catalog */
   }
+  return mapPeterYoutubeVideos().slice(0, limit);
 }
 
 export async function getAllYoutubeVideos(): Promise<YoutubeVideoItem[]> {
@@ -169,10 +181,12 @@ export async function getAllYoutubeVideos(): Promise<YoutubeVideoItem[]> {
       sort: "order",
       limit: 50,
     });
-    return mapYoutube(res.docs as YoutubeVideo[]);
+    const mapped = mapYoutube(res.docs as YoutubeVideo[]);
+    if (mapped.length && !isLegacyDemoYoutubeCatalog(mapped)) return mapped;
   } catch {
-    return [];
+    /* fall through */
   }
+  return mapPeterYoutubeVideos();
 }
 
 export async function getTestimonials(): Promise<Testimonial[]> {

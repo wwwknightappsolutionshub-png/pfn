@@ -5,6 +5,7 @@ import { SiteHeader } from "@/components/layout/site-header";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { ReadingProgress } from "@/components/layout/reading-progress";
 import { Analytics } from "@/components/layout/analytics";
+import { WhatsAppWidget } from "@/components/layout/whatsapp-widget";
 import { organizationJsonLd, buildMetadata } from "@/lib/seo";
 import "@/app/globals.css";
 
@@ -27,6 +28,12 @@ export const metadata: Metadata = buildMetadata({
   path: "/",
 });
 
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover" as const,
+};
+
 export default function FrontendLayout({
   children,
 }: {
@@ -44,11 +51,13 @@ export default function FrontendLayout({
           }}
         />
         <ThemeProvider>
-          <ReadingProgress />
-          <SiteHeader />
-          <main className="flex-1 pt-0">{children}</main>
-          <SiteFooter />
-          <Analytics />
+          <WhatsAppWidget>
+            <ReadingProgress />
+            <SiteHeader />
+            <main className="flex-1 pt-0">{children}</main>
+            <SiteFooter />
+            <Analytics />
+          </WhatsAppWidget>
         </ThemeProvider>
       </body>
     </html>

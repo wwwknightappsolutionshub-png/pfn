@@ -81,21 +81,46 @@ export function AcademicJourney({
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    const root = ref.current;
+    if (!root) return;
+
+    const cards = root.querySelectorAll<HTMLElement>(".journey-step-card");
+    if (!cards.length) return;
+
+    const prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+
+    if (prefersReducedMotion) {
+      gsap.set(cards, { opacity: 1, y: 0, clearProps: "transform,opacity" });
+      return;
+    }
+
+    gsap.set(cards, { opacity: 1, y: 0 });
+
     const ctx = gsap.context(() => {
-      gsap.from(".journey-step-card", {
+      gsap.from(cards, {
         y: 40,
         opacity: 0,
+        immediateRender: false,
         stagger: 0.12,
         duration: 0.75,
         ease: "power3.out",
         scrollTrigger: {
-          trigger: ref.current,
+          trigger: root,
           start: "top 80%",
+          once: true,
+          invalidateOnRefresh: true,
         },
       });
-    }, ref);
-    return () => ctx.revert();
-  }, []);
+      ScrollTrigger.refresh();
+    }, root);
+
+    return () => {
+      ctx.revert();
+      gsap.set(cards, { opacity: 1, y: 0, clearProps: "transform,opacity" });
+    };
+  }, [steps]);
 
   return (
     <div ref={ref} className="relative mt-14">
@@ -116,7 +141,7 @@ export function AcademicJourney({
             )}
             <article
               className={cn(
-                "journey-step-card group flex h-full min-h-[220px] flex-col rounded-2xl border border-pln-navy/10 bg-white p-6",
+                "journey-step-card opacity-100 group flex h-full min-h-[220px] flex-col rounded-2xl border border-pln-navy/10 bg-white p-6",
                 "shadow-[0_4px_20px_rgba(11,20,38,0.04)]",
                 "transition-all duration-300 ease-out",
                 "hover:-translate-y-1.5 hover:border-pln-gold-on-light",

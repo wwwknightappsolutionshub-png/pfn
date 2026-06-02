@@ -25,11 +25,11 @@ export const STREAMING_PLATFORM_META: Record<
 export const DEFAULT_STREAMING_PLATFORMS: StreamingPlatformLink[] = [
   {
     platform: "instagram",
-    url: "https://www.instagram.com/profitablelivingnetwork",
+    url: "https://www.instagram.com/the148peter/",
   },
   {
     platform: "youtube",
-    url: "https://www.youtube.com/@ProfitableLivingNetwork",
+    url: "https://www.youtube.com/@the148peter",
   },
   { platform: "x", url: "https://x.com/ProfitableLivingNet" },
   {

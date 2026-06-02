@@ -12,7 +12,11 @@
     "generate:types": "payload generate:types",
     "seed": "node -e \"fetch('http://localhost:3010/api/seed').then(r=>r.json()).then(console.log).catch(e=>console.error('Start dev server first: npm run dev',e))\"",
     "seed:admin": "node scripts/seed-admin.mjs",
-    "placeholders": "node scripts/fetch-placeholders.mjs"
+    "placeholders": "node scripts/fetch-placeholders.mjs",
+    "sync:youtube": "node scripts/sync-youtube-videos.mjs",
+    "fetch:youtube": "node scripts/fetch-youtube-channel.mjs the148peter",
+    "db:migrate-homepage": "node scripts/migrate-homepage-columns.mjs",
+    "db:repair": "node scripts/repair-sqlite-db.mjs"
   },
   "dependencies": {
     "@payloadcms/db-postgres": "^3.85.0",

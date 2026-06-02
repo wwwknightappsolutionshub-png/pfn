@@ -8,15 +8,15 @@ export function TestimonialsStrip({ testimonials }: Props) {
   if (!testimonials.length) return null;
 
   return (
-    <section className="bg-pln-ivory py-24 dark:bg-pln-navy-light lg:py-32">
-      <div className="mx-auto max-w-7xl px-6 lg:px-10">
+    <section className="bg-pln-ivory pln-section dark:bg-pln-navy-light">
+      <div className="pln-container">
         <p className="font-sans text-xs uppercase tracking-[0.35em] text-pln-gold">
           Voices of Transformation
         </p>
-        <h2 className="mt-4 font-display text-4xl text-pln-navy dark:text-pln-ivory">
+        <h2 className="mt-4 pln-section-title text-pln-navy dark:text-pln-ivory">
           What people are saying
         </h2>
-        <div className="mt-14 grid gap-10 md:grid-cols-3">
+        <div className="mt-10 grid gap-8 sm:mt-12 sm:gap-10 md:grid-cols-2 lg:grid-cols-3">
           {testimonials.map((t) => {
             const img = getMediaUrlOrPlaceholder(t.image, "testimonial");
             return (

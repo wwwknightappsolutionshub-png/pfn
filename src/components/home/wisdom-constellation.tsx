@@ -8,12 +8,9 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { AnimatePresence, motion } from "framer-motion";
 import { Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { PLACEHOLDER_IMAGES } from "@/lib/placeholders";
 import { cn } from "@/lib/utils";
 
 gsap.registerPlugin(ScrollTrigger);
-
-const PETER_PORTRAIT = PLACEHOLDER_IMAGES.portrait;
 
 const topics = [
   { id: "relationships", label: "Relationships", x: 18, y: 28 },
@@ -68,11 +65,17 @@ function ConstellationTopic({
   isActive,
   onEnter,
   onLeave,
+  onToggle,
+  hoverThumbnailSrc,
+  hoverThumbnailAlt,
 }: {
   topic: Topic;
   isActive: boolean;
   onEnter: () => void;
   onLeave: () => void;
+  onToggle: () => void;
+  hoverThumbnailSrc: string;
+  hoverThumbnailAlt: string;
 }) {
   const placement = thumbnailPlacement(topic.x, topic.y);
 
@@ -88,6 +91,7 @@ function ConstellationTopic({
       onMouseLeave={onLeave}
       onFocus={onEnter}
       onBlur={onLeave}
+      onClick={onToggle}
       aria-label={`${topic.label} — Peter Olusanjo`}
     >
       <div
@@ -100,7 +104,7 @@ function ConstellationTopic({
         <span className="relative flex h-4 w-4 items-center justify-center rounded-full bg-pln-gold-on-light shadow-[0_0_16px_rgba(122,95,16,0.4)] ring-2 ring-pln-section-light-bg" />
         <span
           className={cn(
-            "absolute left-1/2 top-full mt-2 -translate-x-1/2 whitespace-nowrap rounded-md px-2.5 py-1 font-sans text-[10px] font-semibold uppercase tracking-[0.16em] shadow-sm transition lg:text-xs",
+            "absolute left-1/2 top-full mt-2 max-w-[7.5rem] -translate-x-1/2 rounded-md px-2 py-1 text-center font-sans text-[9px] font-semibold uppercase leading-tight tracking-[0.12em] shadow-sm transition sm:max-w-none sm:whitespace-nowrap sm:px-2.5 sm:text-[10px] sm:tracking-[0.16em] lg:text-xs",
             isActive
               ? "bg-pln-section-light-heading text-pln-section-light-bg"
               : "bg-pln-section-light-bg/95 text-pln-section-light-heading",
@@ -121,8 +125,8 @@ function ConstellationTopic({
           >
             <div className="h-20 w-20 overflow-hidden rounded-2xl border-2 border-pln-gold-on-light/40 bg-pln-section-light-bg shadow-[0_12px_32px_rgba(11,20,38,0.2)]">
               <Image
-                src={PETER_PORTRAIT}
-                alt=""
+                src={hoverThumbnailSrc}
+                alt={hoverThumbnailAlt}
                 width={80}
                 height={80}
                 className="h-20 w-20 object-cover object-top"
@@ -138,9 +142,15 @@ function ConstellationTopic({
 
 type Props = {
   title: string;
+  hoverThumbnailSrc: string;
+  hoverThumbnailAlt?: string;
 };
 
-export function WisdomConstellation({ title }: Props) {
+export function WisdomConstellation({
+  title,
+  hoverThumbnailSrc,
+  hoverThumbnailAlt = "Peter Olusanjo",
+}: Props) {
   const ref = useRef<HTMLElement>(null);
   const [hoveredId, setHoveredId] = useState<string | null>(null);
 
@@ -174,15 +184,15 @@ export function WisdomConstellation({ title }: Props) {
   return (
     <section
       ref={ref}
-      className="relative overflow-visible border-t border-pln-navy/10 bg-pln-section-light-bg py-28 text-pln-section-light-body lg:py-40"
+      className="relative overflow-hidden border-t border-pln-navy/10 bg-pln-section-light-bg pln-section text-pln-section-light-body"
     >
-      <div className="mx-auto max-w-7xl px-6 lg:px-10">
-        <div className="grid gap-16 lg:grid-cols-12">
+      <div className="pln-container">
+        <div className="grid gap-10 sm:gap-12 lg:grid-cols-12 lg:gap-16">
           <div className="lg:col-span-4 lg:pt-20">
             <p className="font-sans text-xs font-semibold uppercase tracking-[0.35em] text-pln-gold-on-light">
               Section I
             </p>
-            <h2 className="mt-5 border-l-4 border-pln-gold-on-light pl-6 font-display text-4xl font-extrabold leading-[1.05] tracking-tight text-pln-section-light-heading sm:text-5xl lg:text-[3.35rem]">
+            <h2 className="mt-5 border-l-4 border-pln-gold-on-light pl-4 font-display pln-section-title text-pln-section-light-heading sm:pl-6">
               {title}
             </h2>
             <p className="mt-6 font-body text-lg leading-relaxed text-pln-section-light-muted">
@@ -197,7 +207,7 @@ export function WisdomConstellation({ title }: Props) {
             </Button>
           </div>
 
-          <div className="relative aspect-square overflow-visible rounded-sm bg-pln-navy/[0.03] p-6 ring-1 ring-pln-navy/10 lg:col-span-8 lg:p-10">
+          <div className="relative aspect-square overflow-hidden rounded-sm bg-pln-navy/[0.03] p-4 ring-1 ring-pln-navy/10 sm:p-6 lg:col-span-8 lg:overflow-visible lg:p-10">
             <svg
               viewBox="0 0 100 100"
               className="h-full w-full"
@@ -224,6 +234,13 @@ export function WisdomConstellation({ title }: Props) {
                 isActive={hoveredId === topic.id}
                 onEnter={() => setHoveredId(topic.id)}
                 onLeave={() => setHoveredId(null)}
+                onToggle={() =>
+                  setHoveredId((prev) =>
+                    prev === topic.id ? null : topic.id,
+                  )
+                }
+                hoverThumbnailSrc={hoverThumbnailSrc}
+                hoverThumbnailAlt={hoverThumbnailAlt}
               />
             ))}
           </div>

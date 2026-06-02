@@ -37,6 +37,7 @@ export const ContactSubmissions: CollectionConfig = {
         { label: "Consultancy Inquiry", value: "consultancy" },
         { label: "Life Mentoring", value: "mentoring" },
         { label: "Event Registration", value: "event" },
+        { label: "WhatsApp Chat", value: "whatsapp" },
       ],
     },
     {

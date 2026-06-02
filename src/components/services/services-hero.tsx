@@ -6,23 +6,23 @@ import { PLACEHOLDER_IMAGES } from "@/lib/placeholders";
 
 export function ServicesHero() {
   return (
-    <section className="grid min-h-[min(70vh,720px)] border-b border-pln-gold/20 bg-pln-navy text-pln-ivory lg:min-h-[65vh] lg:grid-cols-2">
-      <div className="flex flex-col justify-center px-6 py-16 lg:px-10 lg:py-28 xl:px-16">
+    <section className="grid min-h-0 border-b border-pln-gold/20 bg-pln-navy text-pln-ivory lg:min-h-[65vh] lg:grid-cols-2">
+      <div className="flex flex-col justify-center px-4 py-14 sm:px-6 sm:py-16 lg:px-10 lg:py-28 xl:px-16">
         <div className="w-full max-w-xl lg:mx-auto lg:max-w-lg lg:translate-x-6 xl:max-w-xl xl:translate-x-8">
           <p className="font-sans text-xs font-semibold uppercase tracking-[0.35em] text-pln-gold">
             Services
           </p>
-          <h1 className="mt-6 border-l-4 border-pln-gold pl-6 font-display text-5xl font-extrabold leading-tight lg:text-6xl">
+          <h1 className="mt-4 border-l-4 border-pln-gold pl-4 pln-page-title sm:mt-6 sm:pl-6 lg:text-6xl">
             Wisdom applied with excellence
           </h1>
-          <p className="mt-8 max-w-xl font-body text-lg leading-relaxed text-pln-ivory/80">
+          <p className="mt-6 max-w-xl font-body text-base leading-relaxed text-pln-ivory/80 sm:mt-8 sm:text-lg">
             Partner with PLN for mentoring, consultancy, conferences, and speaking
             — each engagement designed for transformation and Kingdom impact.
           </p>
         </div>
       </div>
 
-      <div className="relative min-h-[45vh] overflow-hidden border-t border-pln-gold/15 lg:min-h-full lg:border-l lg:border-t-0">
+      <div className="relative min-h-[36vh] overflow-hidden border-t border-pln-gold/15 sm:min-h-[42vh] lg:min-h-full lg:border-l lg:border-t-0">
         <RotatingWisdomWeb />
         <Image
           src={PLACEHOLDER_IMAGES.article}

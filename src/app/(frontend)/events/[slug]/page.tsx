@@ -60,10 +60,10 @@ export default async function EventDetailPage({ params }: Props) {
           <p className="mt-8 text-xs font-semibold uppercase tracking-[0.25em] text-pln-gold">
             {event.eventType}
           </p>
-          <h1 className="mt-4 font-display text-5xl font-extrabold leading-tight">
+          <h1 className="mt-4 pln-page-title">
             {event.title}
           </h1>
-          <p className="mt-6 text-lg text-pln-ivory/80">
+          <p className="mt-4 text-base text-pln-ivory/80 sm:mt-6 sm:text-lg">
             {date}
             {event.location ? ` · ${event.location}` : ""}
           </p>

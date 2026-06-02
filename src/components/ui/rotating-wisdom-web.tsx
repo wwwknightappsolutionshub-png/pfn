@@ -42,7 +42,7 @@ export function RotatingWisdomWeb({
         <svg
           viewBox="0 0 200 200"
           className={cn(
-            "h-[min(140%,800px)] w-[min(140%,800px)] max-h-none max-w-none",
+            "h-[min(110%,480px)] w-[min(110%,480px)] max-h-none max-w-none sm:h-[min(140%,800px)] sm:w-[min(140%,800px)]",
             outerOpacity,
           )}
         >
@@ -87,7 +87,7 @@ export function RotatingWisdomWeb({
       >
         <svg
           viewBox="0 0 200 200"
-          className="h-[min(95%,520px)] w-[min(95%,520px)] opacity-25"
+          className="h-[min(80%,360px)] w-[min(80%,360px)] opacity-25 sm:h-[min(95%,520px)] sm:w-[min(95%,520px)]"
         >
           {Array.from({ length: 8 }, (_, i) => {
             const angle = (i / 8) * Math.PI * 2;

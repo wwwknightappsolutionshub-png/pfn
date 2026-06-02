@@ -8,21 +8,21 @@ type Props = {
 
 export function WisdomCta({ title, description, buttonLabel }: Props) {
   return (
-    <section className="relative overflow-hidden bg-pln-ivory py-28 dark:bg-pln-navy-light lg:py-40">
-      <div className="absolute -right-20 top-0 h-96 w-96 rounded-full bg-pln-gold/10 blur-3xl" />
-      <div className="mx-auto grid max-w-7xl gap-16 px-6 lg:grid-cols-2 lg:px-10">
+    <section className="relative overflow-hidden bg-pln-ivory pln-section dark:bg-pln-navy-light">
+      <div className="absolute -right-20 top-0 h-64 w-64 rounded-full bg-pln-gold/10 blur-3xl sm:h-96 sm:w-96" />
+      <div className="pln-container grid gap-10 sm:gap-12 lg:grid-cols-2 lg:gap-16">
         <div>
           <p className="font-sans text-xs uppercase tracking-[0.35em] text-pln-gold">
             Section VI
           </p>
-          <h2 className="mt-4 font-display text-4xl text-pln-navy dark:text-pln-ivory lg:text-5xl">
+          <h2 className="mt-4 pln-section-title text-pln-navy dark:text-pln-ivory">
             {title}
           </h2>
-          <p className="mt-6 max-w-md font-body text-lg leading-relaxed text-pln-charcoal-muted dark:text-pln-ivory/70">
+          <p className="mt-4 max-w-md font-body text-base leading-relaxed text-pln-charcoal-muted dark:text-pln-ivory/70 sm:mt-6 sm:text-lg">
             {description}
           </p>
         </div>
-        <div className="border-l border-pln-gold/30 pl-0 lg:pl-16">
+        <div className="border-t border-pln-gold/30 pt-8 lg:border-l lg:border-t-0 lg:pl-16 lg:pt-0">
           <NewsletterForm
             source="wisdom-snippets"
             submitLabel={buttonLabel}

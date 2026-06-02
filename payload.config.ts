@@ -41,6 +41,8 @@ const db = usePostgres
       client: {
         url: process.env.DATABASE_URL || `file:${sqlitePath}`,
       },
+      // Avoid destructive auto-push (table rebuild) — use npm run db:repair after schema changes
+      push: false,
     });
 
 export default buildConfig({

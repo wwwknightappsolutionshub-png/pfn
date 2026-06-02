@@ -8,44 +8,61 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { AnimatePresence, motion } from "framer-motion";
 import { cn } from "@/lib/utils";
-import { JOURNEY_STEPS } from "@/components/home/journey-steps";
+import type { ResolvedJourneyStep } from "@/components/home/journey-steps";
 
 gsap.registerPlugin(ScrollTrigger);
 
-type Props = { title: string };
+type Props = {
+  title: string;
+  steps: ResolvedJourneyStep[];
+};
 
 /** Section II — pinned scroll; step progress drives the tall portrait image */
-export function WisdomJourney({ title }: Props) {
+export function WisdomJourney({ title, steps }: Props) {
   const sectionRef = useRef<HTMLElement>(null);
   const pinRef = useRef<HTMLDivElement>(null);
   const [activeStep, setActiveStep] = useState(0);
   const [progress, setProgress] = useState(0);
 
-  const active = JOURNEY_STEPS[activeStep];
-  const stepCount = JOURNEY_STEPS.length;
+  const active = steps[activeStep];
+  const stepCount = steps.length;
 
   useEffect(() => {
     const section = sectionRef.current;
     const pin = pinRef.current;
     if (!section || !pin) return;
 
+    const updateFromProgress = (p: number) => {
+      setProgress(p);
+      const idx = Math.min(
+        stepCount - 1,
+        Math.max(0, Math.floor(p * stepCount + 0.02)),
+      );
+      setActiveStep((prev) => (prev === idx ? prev : idx));
+    };
+
     const ctx = gsap.context(() => {
-      ScrollTrigger.create({
-        trigger: section,
-        start: "top top",
-        end: () => `+=${window.innerHeight * (stepCount - 0.15)}`,
-        pin: pin,
-        pinSpacing: true,
-        scrub: 0.35,
-        anticipatePin: 1,
-        onUpdate: (self) => {
-          const p = self.progress;
-          setProgress(p);
-          const idx = Math.min(
-            stepCount - 1,
-            Math.max(0, Math.floor(p * stepCount + 0.02)),
-          );
-          setActiveStep((prev) => (prev === idx ? prev : idx));
+      ScrollTrigger.matchMedia({
+        "(min-width: 1024px)": () => {
+          ScrollTrigger.create({
+            trigger: section,
+            start: "top top",
+            end: () => `+=${window.innerHeight * (stepCount - 0.15)}`,
+            pin: pin,
+            pinSpacing: true,
+            scrub: 0.35,
+            anticipatePin: 1,
+            onUpdate: (self) => updateFromProgress(self.progress),
+          });
+        },
+        "(max-width: 1023px)": () => {
+          ScrollTrigger.create({
+            trigger: section,
+            start: "top 75%",
+            end: "bottom 25%",
+            scrub: 0.5,
+            onUpdate: (self) => updateFromProgress(self.progress),
+          });
         },
       });
     }, section);
@@ -61,14 +78,14 @@ export function WisdomJourney({ title }: Props) {
     >
       <div
         ref={pinRef}
-        className="relative flex min-h-[100dvh] flex-col justify-center py-20 lg:py-0"
+        className="relative flex min-h-0 flex-col justify-center py-16 sm:py-20 lg:min-h-[100dvh] lg:py-0"
       >
-        <div className="mx-auto grid w-full max-w-7xl flex-1 items-center gap-10 px-6 lg:grid-cols-2 lg:gap-16 lg:px-10">
+        <div className="mx-auto grid w-full max-w-7xl flex-1 items-center gap-8 px-4 sm:gap-10 sm:px-6 lg:grid-cols-2 lg:gap-16 lg:px-10">
           <div className="flex flex-col justify-center">
             <p className="font-sans text-xs uppercase tracking-[0.35em] text-pln-gold">
               Section II
             </p>
-            <h2 className="mt-4 max-w-xl font-display text-3xl font-bold lg:text-5xl">
+            <h2 className="mt-4 max-w-xl pln-section-title font-bold text-pln-ivory lg:text-5xl">
               {title}
             </h2>
 
@@ -80,7 +97,7 @@ export function WisdomJourney({ title }: Props) {
             </div>
 
             <ul className="mt-10 space-y-3 lg:mt-12 lg:space-y-4">
-              {JOURNEY_STEPS.map((step, i) => (
+              {steps.map((step, i) => (
                 <li
                   key={step.key}
                   className={cn(
@@ -140,7 +157,7 @@ export function WisdomJourney({ title }: Props) {
                 >
                   <Image
                     src={active.image}
-                    alt=""
+                    alt={active.imageAlt}
                     fill
                     className="object-cover"
                     sizes="(max-width: 1024px) 90vw, 480px"

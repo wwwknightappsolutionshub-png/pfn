@@ -1,16 +1,19 @@
 import Link from "next/link";
 import { SocialMediaIcons } from "@/components/layout/social-media-icons";
 import { StreamingPlatforms } from "@/components/layout/streaming-platforms";
+import { WhatsAppChatTrigger } from "@/components/layout/whatsapp-chat-trigger";
 import { getSiteSettings } from "@/lib/cms";
+import { resolveWhatsApp } from "@/lib/whatsapp";
 
 export async function SiteFooter() {
   const settings = await getSiteSettings();
+  const whatsapp = resolveWhatsApp(settings);
 
   return (
     <footer className="border-t border-pln-charcoal/10 bg-pln-navy text-pln-ivory dark:border-pln-ivory/10">
-      <div className="mx-auto grid max-w-7xl gap-16 px-6 py-20 lg:grid-cols-12 lg:px-10">
+      <div className="mx-auto grid max-w-7xl gap-10 px-4 py-12 sm:gap-12 sm:px-6 sm:py-16 lg:grid-cols-12 lg:gap-16 lg:px-10 lg:py-20">
         <div className="lg:col-span-5">
-          <p className="font-display text-3xl leading-tight">
+          <p className="font-display text-2xl leading-tight sm:text-3xl">
             Profitable Living Network
           </p>
           <p className="mt-4 max-w-md font-body text-sm leading-relaxed text-pln-ivory/70">
@@ -57,6 +60,16 @@ export async function SiteFooter() {
                   Contact
                 </Link>
               </li>
+              {whatsapp.enabled && (
+                <li>
+                  <WhatsAppChatTrigger
+                    variant="dark"
+                    showLabel
+                    label="WhatsApp"
+                    className="inline-flex"
+                  />
+                </li>
+              )}
               <li>
                 <Link href="/events" className="hover:text-pln-gold">
                   Wisdom Snippets

@@ -19,6 +19,31 @@ export const SiteSettings: GlobalConfig = {
       type: "email",
     },
     {
+      name: "whatsappEnabled",
+      type: "checkbox",
+      label: "WhatsApp chat enabled",
+      defaultValue: true,
+      admin: {
+        description: "Show the floating WhatsApp button on the public site.",
+      },
+    },
+    {
+      name: "whatsappNumber",
+      type: "text",
+      label: "WhatsApp number",
+      defaultValue: "+447746798923",
+      admin: {
+        description: "Include country code, e.g. +447746798923",
+      },
+    },
+    {
+      name: "whatsappDefaultMessage",
+      type: "textarea",
+      label: "WhatsApp default message",
+      defaultValue:
+        "Hello Profitable Living Network, I would like to get in touch.",
+    },
+    {
       name: "youtubeChannelUrl",
       type: "text",
       label: "YouTube Channel URL",

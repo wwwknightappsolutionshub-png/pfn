@@ -33,6 +33,13 @@ export function SiteHeader() {
     setOpen(false);
   }, [pathname]);
 
+  useEffect(() => {
+    document.body.style.overflow = open ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [open]);
+
   return (
     <header
       className={cn(
@@ -42,9 +49,9 @@ export function SiteHeader() {
           : "border-pln-ivory/10 bg-pln-navy/92 backdrop-blur-sm",
       )}
     >
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 lg:px-10 lg:py-5">
-        <Link href="/" className="group flex flex-col">
-          <span className="font-display text-xl tracking-tight text-pln-ivory lg:text-2xl">
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 sm:py-4 lg:px-10 lg:py-5">
+        <Link href="/" className="group flex min-w-0 flex-col">
+          <span className="truncate font-display text-lg tracking-tight text-pln-ivory sm:text-xl lg:text-2xl">
             Profitable Living
           </span>
           <span className="font-sans text-[10px] uppercase tracking-[0.35em] text-pln-gold">
@@ -89,7 +96,7 @@ export function SiteHeader() {
       </div>
 
       {open && (
-        <div className="border-t border-pln-ivory/10 bg-pln-navy px-6 py-6 lg:hidden">
+        <div className="max-h-[calc(100dvh-4.5rem)] overflow-y-auto border-t border-pln-ivory/10 bg-pln-navy px-4 py-5 sm:px-6 sm:py-6 lg:hidden">
           {nav.map((item) => (
             <Link
               key={item.href}

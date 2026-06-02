@@ -88,9 +88,33 @@ export interface YoutubeVideo {
 export interface Homepage {
   cinematicHeadline?: string | null;
   cinematicSubheadline?: string | null;
+  heroRightImages?: {
+    missionSlide?: number | Media | null;
+    missionAlt?: string | null;
+    pillarsSlide?: number | Media | null;
+    pillarsAlt?: string | null;
+    gatherSlide?: number | Media | null;
+    gatherAlt?: string | null;
+  };
   wisdomSectionTitle?: string | null;
+  wisdomConstellationHoverImage?: number | Media | null;
+  wisdomConstellationHoverImageAlt?: string | null;
   journeySectionTitle?: string | null;
+  journeyStepImages?: {
+    learnImage?: number | Media | null;
+    learnAlt?: string | null;
+    applyImage?: number | Media | null;
+    applyAlt?: string | null;
+    growImage?: number | Media | null;
+    growAlt?: string | null;
+    influenceImage?: number | Media | null;
+    influenceAlt?: string | null;
+    impactImage?: number | Media | null;
+    impactAlt?: string | null;
+  };
   featuredTeachingsTitle?: string | null;
+  featuredTeachingsHeroImage?: number | Media | null;
+  featuredTeachingsHeroImageAlt?: string | null;
   eventsSectionTitle?: string | null;
   videosSectionTitle?: string | null;
   videosSectionSubtitle?: string | null;
@@ -106,6 +130,9 @@ export interface SiteSetting {
   siteName?: string | null;
   tagline?: string | null;
   contactEmail?: string | null;
+  whatsappEnabled?: boolean | null;
+  whatsappNumber?: string | null;
+  whatsappDefaultMessage?: string | null;
   youtubeChannelUrl?: string | null;
   universityProfileUrl?: string | null;
   analyticsId?: string | null;

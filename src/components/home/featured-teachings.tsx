@@ -7,22 +7,28 @@ import { cn } from "@/lib/utils";
 type Props = {
   title: string;
   articles: Article[];
+  /** Optional CMS override for the large featured card image (Section III) */
+  featuredHeroImage?: { src: string; alt: string } | null;
 };
 
-export function FeaturedTeachings({ title, articles }: Props) {
+export function FeaturedTeachings({
+  title,
+  articles,
+  featuredHeroImage,
+}: Props) {
   if (!articles.length) return null;
 
   const [featured, ...rest] = articles;
 
   return (
-    <section className="border-t border-pln-navy/10 bg-pln-section-light-bg py-28 text-pln-section-light-body lg:py-40">
-      <div className="mx-auto max-w-7xl px-6 lg:px-10">
+    <section className="border-t border-pln-navy/10 bg-pln-section-light-bg pln-section text-pln-section-light-body">
+      <div className="pln-container">
         <div className="flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
           <div>
             <p className="font-sans text-xs font-semibold uppercase tracking-[0.35em] text-pln-gold-on-light">
               Section III
             </p>
-            <h2 className="mt-5 max-w-2xl border-l-4 border-pln-gold-on-light pl-6 font-display text-4xl font-extrabold leading-[1.05] tracking-tight text-pln-section-light-heading sm:text-5xl lg:text-[3.35rem]">
+            <h2 className="mt-5 max-w-2xl border-l-4 border-pln-gold-on-light pl-4 pln-section-title text-pln-section-light-heading sm:pl-6">
               {title}
             </h2>
           </div>
@@ -40,8 +46,11 @@ export function FeaturedTeachings({ title, articles }: Props) {
             className="group relative overflow-hidden rounded-2xl ring-1 ring-pln-navy/10 lg:col-span-7"
           >
             <Image
-              src={getMediaUrlOrPlaceholder(featured.coverImage, "article")}
-              alt={featured.title}
+              src={
+                featuredHeroImage?.src ??
+                getMediaUrlOrPlaceholder(featured.coverImage, "article")
+              }
+              alt={featuredHeroImage?.alt ?? featured.title}
               width={900}
               height={600}
               className="aspect-[4/3] w-full object-cover transition duration-700 group-hover:scale-105"

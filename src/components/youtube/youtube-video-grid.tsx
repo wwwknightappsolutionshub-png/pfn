@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useRef, useCallback, useState } from "react";
+import { useRef, useCallback, useState, useEffect } from "react";
 import { Play } from "lucide-react";
 import type { YoutubeVideoItem } from "@/lib/youtube";
 import { youtubeThumbnail } from "@/lib/youtube";
@@ -14,7 +14,7 @@ type Props = {
   channelUrl?: string | null;
   className?: string;
   variant?: "default" | "light" | "dark";
-  /** When true, shows a 4-column grid that scrolls horizontally on mouse move */
+  /** When true, shows a 4-column grid that scrolls horizontally on mouse move (desktop only) */
   scrollOnHover?: boolean;
 };
 
@@ -30,10 +30,21 @@ export function YoutubeVideoGrid({
   const [playingVideo, setPlayingVideo] = useState<YoutubeVideoItem | null>(
     null,
   );
+  const [hoverScrollEnabled, setHoverScrollEnabled] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 1024px) and (hover: hover)");
+    const update = () => setHoverScrollEnabled(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+
+  const canHoverScroll = scrollOnHover && hoverScrollEnabled;
 
   const handleMouseMove = useCallback(
     (e: React.MouseEvent<HTMLDivElement>) => {
-      if (!scrollOnHover || playingVideo) return;
+      if (!canHoverScroll || playingVideo) return;
       const el = scrollRef.current;
       if (!el || el.scrollWidth <= el.clientWidth) return;
 
@@ -45,7 +56,7 @@ export function YoutubeVideoGrid({
       const maxScroll = el.scrollWidth - el.clientWidth;
       el.scrollLeft = ratio * maxScroll;
     },
-    [scrollOnHover, playingVideo],
+    [canHoverScroll, playingVideo],
   );
 
   if (!videos.length) return null;
@@ -56,17 +67,16 @@ export function YoutubeVideoGrid({
         ref={scrollRef}
         onMouseMove={handleMouseMove}
         className={cn(
-          "flex gap-4 overflow-x-auto pb-4 scrollbar-none",
-          scrollOnHover && !playingVideo && "cursor-ew-resize",
+          "pln-scroll-x",
+          canHoverScroll && !playingVideo && "cursor-ew-resize lg:cursor-ew-resize",
         )}
-        style={{ scrollbarWidth: "none" }}
       >
         {videos.map((video) => (
           <button
             key={video.id}
             type="button"
             onClick={() => setPlayingVideo(video)}
-            className="group relative min-w-[calc(25%-12px)] flex-shrink-0 text-left sm:min-w-[calc(50%-8px)] lg:min-w-[calc(25%-12px)]"
+            className="group relative min-w-[min(85vw,320px)] flex-shrink-0 snap-start text-left sm:min-w-[calc(50%-8px)] lg:min-w-[calc(25%-12px)]"
           >
             <div className="relative aspect-video overflow-hidden bg-pln-navy">
               <Image
@@ -74,19 +84,20 @@ export function YoutubeVideoGrid({
                 alt={video.title}
                 fill
                 className="object-cover transition duration-500 group-hover:scale-105"
-                sizes="(max-width: 768px) 50vw, 25vw"
+                sizes="(max-width: 640px) 85vw, (max-width: 1024px) 50vw, 25vw"
                 unoptimized
               />
               <div className="absolute inset-0 bg-pln-navy/30 transition group-hover:bg-pln-navy/10" />
               <span className="absolute inset-0 flex items-center justify-center">
-                <span className="flex h-14 w-14 items-center justify-center rounded-full border border-pln-ivory/40 bg-pln-navy/60 text-pln-gold backdrop-blur-sm transition group-hover:scale-110 group-hover:border-pln-gold">
-                  <Play size={22} fill="currentColor" />
+                <span className="flex h-12 w-12 items-center justify-center rounded-full border border-pln-ivory/40 bg-pln-navy/60 text-pln-gold backdrop-blur-sm transition group-hover:scale-110 group-hover:border-pln-gold sm:h-14 sm:w-14">
+                  <Play size={20} fill="currentColor" className="sm:hidden" />
+                  <Play size={22} fill="currentColor" className="hidden sm:block" />
                 </span>
               </span>
             </div>
             <h3
               className={cn(
-                "mt-3 font-display text-lg leading-snug transition",
+                "mt-3 font-display text-base leading-snug transition sm:text-lg",
                 isLight
                   ? "text-pln-section-light-heading group-hover:text-pln-gold-on-light"
                   : "group-hover:text-pln-gold",
@@ -119,7 +130,9 @@ export function YoutubeVideoGrid({
               : "text-pln-charcoal-muted dark:text-pln-ivory/50",
           )}
         >
-          Move cursor over videos to browse →
+          {canHoverScroll
+            ? "Move cursor over videos to browse →"
+            : "Swipe to browse videos →"}
         </p>
       )}
 
@@ -129,7 +142,7 @@ export function YoutubeVideoGrid({
           target="_blank"
           rel="noopener noreferrer"
           className={cn(
-            "mt-8 inline-block font-sans text-xs font-semibold uppercase tracking-[0.25em] hover:underline",
+            "mt-6 inline-block font-sans text-xs font-semibold uppercase tracking-[0.25em] hover:underline sm:mt-8",
             isLight ? "text-pln-gold-on-light" : "text-pln-gold",
           )}
         >

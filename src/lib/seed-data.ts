@@ -2,6 +2,10 @@ import fs from "fs";
 import path from "path";
 import type { Payload } from "payload";
 import { seedAdminUser } from "@/lib/seed-admin";
+import { DEFAULT_WHATSAPP_MESSAGE, DEFAULT_WHATSAPP_NUMBER } from "@/lib/whatsapp";
+import { PETER_SOCIAL_URLS } from "@/lib/social-links";
+import { PETER_YOUTUBE_VIDEOS } from "@/lib/peter-youtube-videos";
+import { syncPeterYoutubeVideos } from "@/lib/sync-youtube-videos";
 
 export function richText(...paragraphs: string[]) {
   return {
@@ -33,19 +37,9 @@ export function richText(...paragraphs: string[]) {
   };
 }
 
-export const DEMO_YOUTUBE_CHANNEL =
-  "https://www.youtube.com/@ProfitableLivingNetwork";
+export const DEMO_YOUTUBE_CHANNEL = PETER_SOCIAL_URLS.youtube;
 
-export const DEMO_YOUTUBE_VIDEOS = [
-  { title: "Godly Wisdom for Business Excellence", youtubeId: "M7lc1UVf-VE", description: "Practical principles for honouring God while building a profitable enterprise.", featured: true, showOnHomepage: true, order: 1 },
-  { title: "Relationships Rooted in Scripture", youtubeId: "kJQP7kiw5Fk", description: "How biblical wisdom transforms marriage, family, and friendships.", featured: true, showOnHomepage: true, order: 2 },
-  { title: "Financial Stewardship That Glorifies God", youtubeId: "9bZkp7q19f0", description: "Managing resources with integrity, generosity, and long-term vision.", featured: true, showOnHomepage: true, order: 3 },
-  { title: "Career Growth with Kingdom Purpose", youtubeId: "RgKAFK5djSk", description: "Advancing professionally while staying anchored in godly character.", featured: true, showOnHomepage: true, order: 4 },
-  { title: "Wisdom Snippets: Monday Teaching", youtubeId: "OPf0YbXqDm0", description: "Weekly practical insight for everyday decisions.", featured: false, showOnHomepage: false, order: 5 },
-  { title: "School of Wisdom Session Highlight", youtubeId: "y6120QOlsfU", description: "Deeper discipleship from our monthly gathering.", featured: false, showOnHomepage: false, order: 6 },
-  { title: "Health, Wholeness, and Spiritual Discipline", youtubeId: "L_jWHffIx5E", description: "Caring for body and spirit as stewards of God's gift.", featured: false, showOnHomepage: false, order: 7 },
-  { title: "Influence and Impact in Your Sphere", youtubeId: "Zi_XLOBDo_Y", description: "Leading others through exemplary, profitable living.", featured: false, showOnHomepage: false, order: 8 },
-];
+export const DEMO_YOUTUBE_VIDEOS = PETER_YOUTUBE_VIDEOS;
 
 const SEED_IMAGE_URLS = {
   portrait: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=1200&q=80",
@@ -131,14 +125,7 @@ export async function runSeed(payload: Payload) {
     uploadImage(payload, SEED_IMAGE_URLS.testimonial3, "Testimonial portrait", "t3.jpg"),
   ]);
 
-  const youtubeIds: number[] = [];
-  for (const v of DEMO_YOUTUBE_VIDEOS) {
-    const doc = await payload.create({
-      collection: "youtube-videos",
-      data: { ...v, publishedAt: new Date().toISOString() },
-    });
-    youtubeIds.push(doc.id);
-  }
+  const { ids: youtubeIds } = await syncPeterYoutubeVideos(payload);
 
   const articlesData = [
     { title: "The Godly Edge in Business Decision-Making", slug: "godly-edge-business-decisions", excerpt: "Discover how belonging to God reshapes the way you evaluate risk, opportunity, and stewardship.", category: "articles" as const, coverImage: article1Img },
@@ -163,7 +150,7 @@ export async function runSeed(payload: Payload) {
         content: richText(a.excerpt, "Profitable Living Network equips you with practical, biblical wisdom for everyday life.", "Join Wisdom Snippets every Monday and School of Wisdom monthly."),
       },
     });
-    articleIds.push(doc.id);
+    articleIds.push(Number(doc.id));
   }
 
   const now = new Date();
@@ -194,7 +181,7 @@ export async function runSeed(payload: Payload) {
         ],
       },
     });
-    eventIds.push(doc.id);
+    eventIds.push(Number(doc.id));
   }
 
   const servicesData = [
@@ -245,13 +232,16 @@ export async function runSeed(payload: Payload) {
       siteName: "Profitable Living Network",
       tagline: "Godly wisdom for a profitable life",
       contactEmail: "hello@profitableliving.network",
+      whatsappEnabled: true,
+      whatsappNumber: DEFAULT_WHATSAPP_NUMBER,
+      whatsappDefaultMessage: DEFAULT_WHATSAPP_MESSAGE,
       youtubeChannelUrl: DEMO_YOUTUBE_CHANNEL,
       universityProfileUrl: "https://www.nottingham.ac.uk",
       newsletterEnabled: true,
       streamingPlatforms: [
         {
           platform: "instagram",
-          url: "https://www.instagram.com/profitablelivingnetwork",
+          url: PETER_SOCIAL_URLS.instagram,
         },
         { platform: "youtube", url: DEMO_YOUTUBE_CHANNEL },
         { platform: "x", url: "https://x.com/ProfitableLivingNet" },
@@ -261,13 +251,10 @@ export async function runSeed(payload: Payload) {
         },
       ],
       socialLinks: [
-        { platform: "youtube", url: DEMO_YOUTUBE_CHANNEL },
-        {
-          platform: "instagram",
-          url: "https://www.instagram.com/profitablelivingnetwork",
-        },
-        { platform: "twitter", url: "https://x.com/ProfitableLivingNet" },
-        { platform: "linkedin", url: "https://www.linkedin.com/in/peter-olusanjo" },
+        { platform: "youtube", url: PETER_SOCIAL_URLS.youtube },
+        { platform: "instagram", url: PETER_SOCIAL_URLS.instagram },
+        { platform: "linkedin", url: PETER_SOCIAL_URLS.linkedin },
+        { platform: "facebook", url: PETER_SOCIAL_URLS.facebook },
       ],
       seo: {
         defaultTitle: "Profitable Living Network",
@@ -285,6 +272,30 @@ export async function runSeed(payload: Payload) {
       featuredVideos: youtubeIds.slice(0, 4),
       videosSectionTitle: "From the Teaching Channel",
       videosSectionSubtitle: "Watch practical wisdom — new videos on our YouTube channel.",
+      heroRightImages: {
+        missionSlide: article1Img,
+        missionAlt: "Teaching and wisdom",
+        pillarsSlide: article2Img,
+        pillarsAlt: "Wisdom for everyday living",
+        gatherSlide: portraitId,
+        gatherAlt: "Peter Olusanjo",
+      },
+      wisdomConstellationHoverImage: portraitId,
+      wisdomConstellationHoverImageAlt: "Peter Olusanjo",
+      journeyStepImages: {
+        learnImage: article1Img,
+        learnAlt: "Learn",
+        applyImage: article2Img,
+        applyAlt: "Apply",
+        growImage: article3Img,
+        growAlt: "Grow",
+        influenceImage: article4Img,
+        influenceAlt: "Influence",
+        impactImage: portraitId,
+        impactAlt: "Impact",
+      },
+      featuredTeachingsHeroImage: article1Img,
+      featuredTeachingsHeroImageAlt: "Featured teaching",
     },
   });
 

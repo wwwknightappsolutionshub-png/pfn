@@ -38,7 +38,7 @@ function EventCard({
     <Link
       href={href}
       className={cn(
-        "group rounded-2xl border border-pln-navy/10 bg-white/90 p-10 transition-colors",
+        "group rounded-2xl border border-pln-navy/10 bg-white/90 p-6 transition-colors sm:p-8 lg:p-10",
         "hover:border-pln-gold-on-light/40 hover:bg-white hover:shadow-[0_12px_36px_rgba(11,20,38,0.1)]",
         staggered && "lg:translate-y-12",
       )}
@@ -58,16 +58,16 @@ function EventCard({
 
 export function UpcomingEvents({ title, events }: Props) {
   return (
-    <section className="border-t border-pln-navy/10 bg-pln-section-light-bg py-28 text-pln-section-light-body lg:py-40">
-      <div className="mx-auto max-w-7xl px-6 lg:px-10">
+    <section className="border-t border-pln-navy/10 bg-pln-section-light-bg pln-section text-pln-section-light-body">
+      <div className="pln-container">
         <p className="font-sans text-xs font-semibold uppercase tracking-[0.35em] text-pln-gold-on-light">
           Section V
         </p>
-        <h2 className="mt-5 max-w-2xl border-l-4 border-pln-gold-on-light pl-6 font-display text-4xl font-extrabold leading-[1.05] tracking-tight text-pln-section-light-heading sm:text-5xl lg:text-[3.35rem]">
+        <h2 className="mt-5 max-w-2xl border-l-4 border-pln-gold-on-light pl-4 pln-section-title text-pln-section-light-heading sm:pl-6">
           {title}
         </h2>
 
-        <div className="mt-16 grid gap-6 lg:grid-cols-2 lg:gap-8">
+        <div className="mt-10 grid gap-6 sm:mt-12 lg:mt-16 lg:grid-cols-2 lg:gap-8">
           {events.length > 0 ? (
             events.map((event, i) => (
               <EventCard

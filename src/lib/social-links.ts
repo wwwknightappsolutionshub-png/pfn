@@ -24,45 +24,42 @@ export const SOCIAL_PLATFORM_META: Record<
   twitter: { label: "X", Icon: X },
 };
 
+/** Peter Olusanjo — canonical profile URLs (footer & fallbacks) */
+export const PETER_SOCIAL_URLS = {
+  youtube: "https://www.youtube.com/@the148peter",
+  instagram: "https://www.instagram.com/the148peter/",
+  linkedin: "https://uk.linkedin.com/in/peter-olusanjo-2a447390",
+  facebook: "https://www.facebook.com/polayiwola/",
+} as const;
+
 export const DEFAULT_SOCIAL_LINKS: SocialLink[] = [
-  {
-    platform: "youtube",
-    url: "https://www.youtube.com/@ProfitableLivingNetwork",
-  },
-  {
-    platform: "instagram",
-    url: "https://www.instagram.com/profitablelivingnetwork",
-  },
-  { platform: "twitter", url: "https://x.com/ProfitableLivingNet" },
-  {
-    platform: "linkedin",
-    url: "https://www.linkedin.com/in/peter-olusanjo",
-  },
+  { platform: "youtube", url: PETER_SOCIAL_URLS.youtube },
+  { platform: "instagram", url: PETER_SOCIAL_URLS.instagram },
+  { platform: "linkedin", url: PETER_SOCIAL_URLS.linkedin },
+  { platform: "facebook", url: PETER_SOCIAL_URLS.facebook },
 ];
+
+const CANONICAL_SOCIAL_PLATFORMS = new Set<SocialPlatformId>([
+  "youtube",
+  "instagram",
+  "linkedin",
+  "facebook",
+]);
 
 export function normalizeSocialLinks(
   links?: { platform?: string | null; url: string }[] | null,
 ): SocialLink[] {
-  if (!links?.length) return DEFAULT_SOCIAL_LINKS;
+  const result: SocialLink[] = [...DEFAULT_SOCIAL_LINKS];
 
-  const order: SocialPlatformId[] = [
-    "youtube",
-    "instagram",
-    "twitter",
-    "linkedin",
-    "facebook",
-  ];
+  const twitter = links?.find(
+    (l) => l.platform === "twitter" && l.url?.trim(),
+  );
+  if (twitter) {
+    result.push({ platform: "twitter", url: twitter.url });
+  }
 
-  const mapped = links
-    .filter((l) => l.url && l.platform && l.platform in SOCIAL_PLATFORM_META)
-    .map((l) => ({
-      platform: l.platform as SocialPlatformId,
-      url: l.url,
-    }));
-
-  if (!mapped.length) return DEFAULT_SOCIAL_LINKS;
-
-  return order
-    .map((id) => mapped.find((m) => m.platform === id))
-    .filter((x): x is SocialLink => Boolean(x));
+  return result.filter(
+    (l) =>
+      CANONICAL_SOCIAL_PLATFORMS.has(l.platform) || l.platform === "twitter",
+  );
 }

@@ -15,17 +15,17 @@ export function AboutPageEditorial({
   universityProfileUrl,
 }: AboutPageViewProps) {
   return (
-    <div className="pb-24">
-      <section className="grid min-h-[min(88dvh,900px)] bg-pln-navy lg:min-h-[85dvh] lg:grid-cols-2">
-        <div className="flex flex-col justify-center px-6 py-16 lg:px-10 lg:py-24 xl:px-16">
+    <div className="pb-16 sm:pb-24">
+      <section className="grid min-h-0 bg-pln-navy lg:min-h-[85dvh] lg:grid-cols-2">
+        <div className="flex flex-col justify-center px-4 py-14 sm:px-6 sm:py-16 lg:px-10 lg:py-24 xl:px-16">
           <div className="w-full max-w-xl lg:mx-auto lg:max-w-lg lg:translate-x-8 xl:max-w-xl xl:translate-x-12">
             <p className="font-sans text-xs font-semibold uppercase tracking-[0.4em] text-pln-gold">
               Profitable Living Network
             </p>
-            <h1 className="mt-6 font-display text-5xl font-extrabold leading-[1.02] text-pln-ivory sm:text-6xl lg:text-[3.5rem] xl:text-7xl">
+            <h1 className="mt-4 pln-page-title text-pln-ivory sm:mt-6 lg:text-[3.5rem] xl:text-7xl">
               Peter Olusanjo
             </h1>
-            <p className="mt-8 max-w-xl font-body text-lg leading-relaxed text-pln-ivory/85 lg:text-xl">
+            <p className="mt-6 max-w-xl font-body text-base leading-relaxed text-pln-ivory/85 sm:mt-8 sm:text-lg lg:text-xl">
               {ABOUT_MISSION}
             </p>
             <p className="mt-6 font-display text-2xl italic text-pln-gold">
@@ -37,12 +37,12 @@ export function AboutPageEditorial({
         <AboutHeroVisual portraitUrl={portraitUrl} />
       </section>
 
-      <section className="bg-pln-section-light-bg py-20 text-pln-section-light-body lg:py-28">
-        <div className="mx-auto max-w-4xl px-6 text-center lg:px-10">
+      <section className="bg-pln-section-light-bg pln-section-tight text-pln-section-light-body">
+        <div className="mx-auto max-w-4xl px-4 text-center sm:px-6 lg:px-10">
           <p className="font-sans text-xs font-semibold uppercase tracking-[0.35em] text-pln-gold-on-light">
             Biography
           </p>
-          <p className="mt-8 font-body text-xl leading-relaxed text-pln-section-light-muted lg:text-2xl lg:leading-relaxed">
+          <p className="mt-6 font-body text-lg leading-relaxed text-pln-section-light-muted sm:mt-8 sm:text-xl lg:text-2xl lg:leading-relaxed">
             {ABOUT_BIO}
           </p>
         </div>
@@ -50,10 +50,10 @@ export function AboutPageEditorial({
 
       <MinistriesSection />
 
-      <section className="border-t border-pln-navy/10 bg-pln-ivory py-20 text-pln-section-light-body lg:py-28">
-        <div className="mx-auto max-w-7xl px-6 lg:px-10">
+      <section className="border-t border-pln-navy/10 bg-pln-ivory pln-section-tight text-pln-section-light-body">
+        <div className="pln-container">
           <div className="mx-auto max-w-2xl text-center">
-            <h2 className="font-display text-4xl font-extrabold text-pln-section-light-heading lg:text-5xl">
+            <h2 className="pln-section-title text-pln-section-light-heading">
               Academic Journey
             </h2>
             <p className="mt-4 font-body text-pln-section-light-muted">
