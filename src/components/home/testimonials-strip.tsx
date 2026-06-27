@@ -2,19 +2,27 @@ import type { Testimonial } from "@/payload-types";
 import { getMediaUrlOrPlaceholder } from "@/lib/media";
 import Image from "next/image";
 
-type Props = { testimonials: Testimonial[] };
+type Props = {
+  testimonials: Testimonial[];
+  sectionLabel: string;
+  sectionTitle: string;
+};
 
-export function TestimonialsStrip({ testimonials }: Props) {
+export function TestimonialsStrip({
+  testimonials,
+  sectionLabel,
+  sectionTitle,
+}: Props) {
   if (!testimonials.length) return null;
 
   return (
     <section className="bg-pln-ivory pln-section dark:bg-pln-navy-light">
       <div className="pln-container">
         <p className="font-sans text-xs uppercase tracking-[0.35em] text-pln-gold">
-          Voices of Transformation
+          {sectionLabel}
         </p>
         <h2 className="mt-4 pln-section-title text-pln-navy dark:text-pln-ivory">
-          What people are saying
+          {sectionTitle}
         </h2>
         <div className="mt-10 grid gap-8 sm:mt-12 sm:gap-10 md:grid-cols-2 lg:grid-cols-3">
           {testimonials.map((t) => {

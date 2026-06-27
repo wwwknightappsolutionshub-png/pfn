@@ -3,28 +3,39 @@ import { SocialMediaIcons } from "@/components/layout/social-media-icons";
 import { StreamingPlatforms } from "@/components/layout/streaming-platforms";
 import { WhatsAppChatTrigger } from "@/components/layout/whatsapp-chat-trigger";
 import { getSiteSettings } from "@/lib/cms";
+import type { SiteSetting } from "@/payload-types";
 import { resolveWhatsApp } from "@/lib/whatsapp";
 
 export async function SiteFooter() {
   const settings = await getSiteSettings();
   const whatsapp = resolveWhatsApp(settings);
 
+  const settingsExt = settings as
+    | (SiteSetting & {
+        footerDescription?: string | null;
+        footerScripture?: string | null;
+      })
+    | null;
+
   return (
     <footer className="border-t border-pln-charcoal/10 bg-pln-navy text-pln-ivory dark:border-pln-ivory/10">
       <div className="mx-auto grid max-w-7xl gap-10 px-4 py-12 sm:gap-12 sm:px-6 sm:py-16 lg:grid-cols-12 lg:gap-16 lg:px-10 lg:py-20">
         <div className="lg:col-span-5">
           <p className="font-display text-2xl leading-tight sm:text-3xl">
-            Profitable Living Network
+            {settingsExt?.siteName}
           </p>
-          <p className="mt-4 max-w-md font-body text-sm leading-relaxed text-pln-ivory/70">
-            A Christian mission dedicated to teaching how to live a godly and
-            profitable life — wisdom for everyday living.
-          </p>
-          <p className="mt-6 font-sans text-xs text-pln-gold">
-            1 Timothy 4:7–8
-          </p>
+          {settingsExt?.footerDescription && (
+            <p className="mt-4 max-w-md font-body text-sm leading-relaxed text-pln-ivory/70">
+              {settingsExt.footerDescription}
+            </p>
+          )}
+          {settingsExt?.footerScripture && (
+            <p className="mt-6 font-sans text-xs text-pln-gold">
+              {settingsExt.footerScripture}
+            </p>
+          )}
           <SocialMediaIcons
-            links={settings?.socialLinks}
+            links={settingsExt?.socialLinks}
             className="mt-10"
             variant="dark"
           />
@@ -86,15 +97,14 @@ export async function SiteFooter() {
 
         <div className="lg:col-span-3">
           <StreamingPlatforms
-            links={settings?.streamingPlatforms}
+            links={settingsExt?.streamingPlatforms}
             variant="dark"
           />
         </div>
       </div>
 
       <div className="border-t border-pln-ivory/10 px-6 py-6 text-center font-sans text-xs text-pln-ivory/50 lg:px-10">
-        © {new Date().getFullYear()} Profitable Living Network. All rights
-        reserved.
+        © {new Date().getFullYear()} {settingsExt?.siteName}. All rights reserved.
       </div>
     </footer>
   );

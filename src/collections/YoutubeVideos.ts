@@ -1,4 +1,8 @@
 import type { CollectionConfig } from "payload";
+import {
+  revalidateOnPublicContentChange,
+  revalidateOnPublicContentDelete,
+} from "@/lib/payload-revalidate";
 
 export const YoutubeVideos: CollectionConfig = {
   slug: "youtube-videos",
@@ -7,6 +11,10 @@ export const YoutubeVideos: CollectionConfig = {
     defaultColumns: ["title", "youtubeId", "featured", "order"],
     description:
       "Videos from the PLN YouTube channel. Paste the video ID from the YouTube URL.",
+  },
+  hooks: {
+    afterChange: [revalidateOnPublicContentChange],
+    afterDelete: [revalidateOnPublicContentDelete],
   },
   fields: [
     {

@@ -1,3 +1,4 @@
+import { unstable_noStore as noStore } from "next/cache";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -20,6 +21,8 @@ export async function generateMetadata({ params }: Props) {
 }
 
 export default async function EventDetailPage({ params }: Props) {
+  noStore();
+
   const { slug } = await params;
   const event = await getEventBySlug(slug);
   if (!event) notFound();

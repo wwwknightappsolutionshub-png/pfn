@@ -2,6 +2,7 @@ import { AboutPageEditorial } from "@/components/about/about-page-editorial";
 import { getAboutPage, getSiteSettings } from "@/lib/cms";
 import { buildMetadata } from "@/lib/seo";
 import { getMediaUrlOrPlaceholder } from "@/lib/media";
+import { unstable_noStore as noStore } from "next/cache";
 
 export const metadata = buildMetadata({
   title: "About | Profitable Living Network",
@@ -10,16 +11,16 @@ export const metadata = buildMetadata({
   path: "/about",
 });
 
-export const revalidate = 120;
-
 export default async function AboutPage() {
+  noStore();
+
   const about = await getAboutPage();
   const settings = await getSiteSettings();
 
   return (
     <AboutPageEditorial
+      about={about}
       portraitUrl={getMediaUrlOrPlaceholder(about?.portrait, "portrait")}
-      credentials={about?.credentials}
       universityProfileUrl={settings?.universityProfileUrl}
     />
   );

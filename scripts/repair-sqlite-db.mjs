@@ -50,6 +50,16 @@ for (const stale of ["__new_homepage", "_homepage_v4"]) {
   }
 }
 
+const homepageTable = tables.rows.some((r) => r.name === "homepage");
+if (!homepageTable) {
+  console.error(
+    "\nNo homepage table found. This script repairs an existing database.",
+  );
+  console.error("Fresh server: set push: true in payload.config.ts, then run:");
+  console.error("  npm run db:init");
+  process.exit(1);
+}
+
 const info = await client.execute("PRAGMA table_info(homepage)");
 const names = new Set(info.rows.map((r) => r.name));
 

@@ -1,9 +1,17 @@
 import type { CollectionConfig } from "payload";
+import {
+  revalidateOnPublicContentChange,
+  revalidateOnPublicContentDelete,
+} from "@/lib/payload-revalidate";
 
 export const Testimonials: CollectionConfig = {
   slug: "testimonials",
   admin: {
     useAsTitle: "name",
+  },
+  hooks: {
+    afterChange: [revalidateOnPublicContentChange],
+    afterDelete: [revalidateOnPublicContentDelete],
   },
   fields: [
     { name: "name", type: "text", required: true },

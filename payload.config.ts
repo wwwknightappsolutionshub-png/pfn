@@ -18,6 +18,10 @@ import { YoutubeVideos } from "./src/collections/YoutubeVideos";
 import { Homepage } from "./src/globals/Homepage";
 import { SiteSettings } from "./src/globals/SiteSettings";
 import { AboutPage } from "./src/globals/AboutPage";
+import { ServicesPage } from "./src/globals/ServicesPage";
+import { ContactPage } from "./src/globals/ContactPage";
+import { EventsPage } from "./src/globals/EventsPage";
+import { ResourcesPage } from "./src/globals/ResourcesPage";
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
@@ -72,7 +76,15 @@ export default buildConfig({
     NewsletterSubscribers,
     YoutubeVideos,
   ],
-  globals: [Homepage, SiteSettings, AboutPage],
+  globals: [
+    Homepage,
+    SiteSettings,
+    AboutPage,
+    ServicesPage,
+    ContactPage,
+    EventsPage,
+    ResourcesPage,
+  ],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || "",
   typescript: {

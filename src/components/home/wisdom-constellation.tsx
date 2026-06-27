@@ -8,18 +8,10 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { AnimatePresence, motion } from "framer-motion";
 import { Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import type { ConstellationTopic } from "@/lib/homepage-hero";
 import { cn } from "@/lib/utils";
 
 gsap.registerPlugin(ScrollTrigger);
-
-const topics = [
-  { id: "relationships", label: "Relationships", x: 18, y: 28 },
-  { id: "business", label: "Business", x: 72, y: 18 },
-  { id: "finance", label: "Finance", x: 82, y: 52 },
-  { id: "career", label: "Career", x: 55, y: 68 },
-  { id: "health", label: "Health", x: 22, y: 62 },
-  { id: "spiritual", label: "Spiritual Growth", x: 42, y: 38 },
-] as const;
 
 const connections: [number, number][] = [
   [0, 5],
@@ -58,7 +50,7 @@ function thumbnailPlacement(x: number, y: number) {
   };
 }
 
-type Topic = (typeof topics)[number];
+type Topic = ConstellationTopic;
 
 function ConstellationTopic({
   topic,
@@ -142,12 +134,18 @@ function ConstellationTopic({
 
 type Props = {
   title: string;
+  subtitle: string;
+  ctaLabel: string;
+  topics: ConstellationTopic[];
   hoverThumbnailSrc: string;
   hoverThumbnailAlt?: string;
 };
 
 export function WisdomConstellation({
   title,
+  subtitle,
+  ctaLabel,
+  topics,
   hoverThumbnailSrc,
   hoverThumbnailAlt = "Peter Olusanjo",
 }: Props) {
@@ -196,13 +194,12 @@ export function WisdomConstellation({
               {title}
             </h2>
             <p className="mt-6 font-body text-lg leading-relaxed text-pln-section-light-muted">
-              Practical wisdom woven across every dimension of life — connected,
-              intentional, and transformative.
+              {subtitle}
             </p>
             <Button asChild variant="gold" size="lg" className="mt-8">
               <Link href="/resources">
                 <Play size={16} fill="currentColor" />
-                Listen to Peter
+                {ctaLabel}
               </Link>
             </Button>
           </div>

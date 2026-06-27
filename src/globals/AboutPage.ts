@@ -1,12 +1,31 @@
 import type { GlobalConfig } from "payload";
+import { createGlobalRevalidateHook } from "@/lib/payload-revalidate";
 
 export const AboutPage: GlobalConfig = {
   slug: "about-page",
   label: "About Page",
+  hooks: {
+    afterChange: [createGlobalRevalidateHook(["/about"])],
+  },
   fields: [
+    {
+      name: "heroKicker",
+      type: "text",
+      defaultValue: "Profitable Living Network",
+    },
+    {
+      name: "heroTitle",
+      type: "text",
+      defaultValue: "Peter Olusanjo",
+    },
     {
       name: "missionStatement",
       type: "richText",
+    },
+    {
+      name: "scriptureReference",
+      type: "text",
+      defaultValue: "1 Timothy 4:7–8",
     },
     {
       name: "portrait",
@@ -14,20 +33,56 @@ export const AboutPage: GlobalConfig = {
       relationTo: "media",
     },
     {
+      name: "biographySectionLabel",
+      type: "text",
+      defaultValue: "Biography",
+    },
+    {
       name: "biography",
       type: "richText",
+    },
+    {
+      name: "ministriesSectionLabel",
+      type: "text",
+      defaultValue: "Ministries",
+    },
+    {
+      name: "speakingMinistryTitle",
+      type: "text",
+      defaultValue: "Speaking Ministry",
     },
     {
       name: "speakingMinistry",
       type: "richText",
     },
     {
+      name: "teachingMinistryTitle",
+      type: "text",
+      defaultValue: "Teaching Ministry",
+    },
+    {
       name: "teachingMinistry",
       type: "richText",
     },
     {
+      name: "academicProfileTitle",
+      type: "text",
+      defaultValue: "Academic Profile",
+    },
+    {
       name: "academicProfile",
       type: "richText",
+    },
+    {
+      name: "academicJourneyTitle",
+      type: "text",
+      defaultValue: "Academic Journey",
+    },
+    {
+      name: "academicJourneySubtitle",
+      type: "textarea",
+      defaultValue:
+        "Four milestones of scholarship in service of faithful, practical teaching.",
     },
     {
       name: "credentials",

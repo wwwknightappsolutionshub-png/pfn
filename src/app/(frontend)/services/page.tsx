@@ -1,7 +1,9 @@
 import { ServiceGrid } from "@/components/services/service-grid";
 import { ServicesHero } from "@/components/services/services-hero";
-import { getServices } from "@/lib/cms";
+import { getServices, getServicesPage } from "@/lib/cms";
 import { buildMetadata } from "@/lib/seo";
+import { resolveMediaUrl } from "@/lib/media.server";
+import { unstable_noStore as noStore } from "next/cache";
 
 export const metadata = buildMetadata({
   title: "Services | Profitable Living Network",
@@ -10,14 +12,25 @@ export const metadata = buildMetadata({
   path: "/services",
 });
 
-export const revalidate = 120;
-
 export default async function ServicesPage() {
-  const services = await getServices();
+  noStore();
+
+  const [services, page] = await Promise.all([
+    getServices(),
+    getServicesPage(),
+  ]);
+
+  const heroImageUrl = await resolveMediaUrl(page?.heroImage);
 
   return (
     <div className="pb-24">
-      <ServicesHero />
+      <ServicesHero
+        kicker={page?.heroKicker || ""}
+        title={page?.heroTitle || ""}
+        description={page?.heroDescription || ""}
+        heroImageUrl={heroImageUrl}
+        heroImageAlt={page?.heroImageAlt}
+      />
 
       <section className="bg-pln-section-light-bg py-16 text-pln-section-light-body lg:py-24">
         <div className="mx-auto max-w-7xl px-6 lg:px-10">

@@ -1,6 +1,10 @@
 import type { CollectionConfig } from "payload";
 import path from "path";
 import { fileURLToPath } from "url";
+import {
+  revalidateOnPublicContentChange,
+  revalidateOnPublicContentDelete,
+} from "@/lib/payload-revalidate";
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
@@ -22,17 +26,19 @@ export const Media: CollectionConfig = {
   access: {
     read: () => true,
   },
-  upload: {
-    staticDir: path.resolve(dirname, "../../media"),
-    mimeTypes: ["image/*", "application/pdf", "video/*"],
-  },
   hooks: {
+    afterChange: [revalidateOnPublicContentChange],
+    afterDelete: [revalidateOnPublicContentDelete],
     beforeOperation: [
       ({ req, operation }) => {
         if (operation !== "create" || !req.file) return;
         req.file.name = sanitizeUploadFilename(req.file.name);
       },
     ],
+  },
+  upload: {
+    staticDir: path.resolve(dirname, "../../media"),
+    mimeTypes: ["image/*", "application/pdf", "video/*"],
   },
   admin: {
     useAsTitle: "alt",

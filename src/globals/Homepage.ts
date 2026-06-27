@@ -1,8 +1,12 @@
 import type { GlobalConfig } from "payload";
+import { revalidateHomepageGlobal } from "@/lib/payload-revalidate";
 
 export const Homepage: GlobalConfig = {
   slug: "homepage",
   label: "Homepage",
+  hooks: {
+    afterChange: [revalidateHomepageGlobal],
+  },
   fields: [
     {
       name: "cinematicHeadline",
@@ -13,6 +17,136 @@ export const Homepage: GlobalConfig = {
       name: "cinematicSubheadline",
       type: "text",
       defaultValue: "Learn how to make it count.",
+    },
+    {
+      name: "heroMissionSlide",
+      type: "group",
+      label: "Hero — slide 1 copy",
+      fields: [
+        {
+          name: "kicker",
+          type: "text",
+          defaultValue: "Profitable Living Network",
+        },
+        {
+          name: "panelTitle",
+          type: "text",
+          defaultValue: "Godly wisdom. Profitable life.",
+        },
+        {
+          name: "panelBody",
+          type: "textarea",
+          defaultValue:
+            "A Christian mission teaching how to live with excellence in every sphere — rooted in Scripture and proven in experience.",
+        },
+        {
+          name: "highlights",
+          type: "array",
+          label: "Panel highlights",
+          fields: [
+            { name: "label", type: "text", required: true },
+            { name: "value", type: "text", required: true },
+          ],
+          defaultValue: [
+            { label: "Weekly", value: "Wisdom Snippets" },
+            { label: "Monthly", value: "School of Wisdom" },
+            { label: "Mission", value: "1 Tim. 4:7–8" },
+          ],
+        },
+      ],
+    },
+    {
+      name: "heroPillarsSlide",
+      type: "group",
+      label: "Hero — slide 2 copy",
+      fields: [
+        {
+          name: "kicker",
+          type: "text",
+          defaultValue: "Wisdom for everyday living",
+        },
+        {
+          name: "title",
+          type: "text",
+          defaultValue: "Six pillars. One integrated life in Christ.",
+        },
+        {
+          name: "description",
+          type: "textarea",
+          defaultValue:
+            "Practical teaching across relationships, business, finance, career, health, and spiritual growth — connected, intentional, and transformative.",
+        },
+        {
+          name: "panelTitle",
+          type: "text",
+          defaultValue: "The constellation of wisdom",
+        },
+        {
+          name: "panelBody",
+          type: "textarea",
+          defaultValue:
+            "Each area of life informs the others. PLN helps you apply godly principles with clarity and confidence.",
+        },
+        {
+          name: "pillarLabels",
+          type: "array",
+          label: "Pillar labels",
+          fields: [{ name: "label", type: "text", required: true }],
+          defaultValue: [
+            { label: "Relationships" },
+            { label: "Business" },
+            { label: "Finance" },
+            { label: "Career" },
+            { label: "Health" },
+            { label: "Spiritual Growth" },
+          ],
+        },
+      ],
+    },
+    {
+      name: "heroGatherSlide",
+      type: "group",
+      label: "Hero — slide 3 copy",
+      fields: [
+        {
+          name: "kicker",
+          type: "text",
+          defaultValue: "Join the journey",
+        },
+        {
+          name: "title",
+          type: "text",
+          defaultValue: "Learn. Apply. Grow. Influence. Impact.",
+        },
+        {
+          name: "description",
+          type: "textarea",
+          defaultValue:
+            "Every Monday — Wisdom Snippets. Third Friday monthly — School of Wisdom. Step into a community pursuing godliness with purpose.",
+        },
+        {
+          name: "panelTitle",
+          type: "text",
+          defaultValue: "Led by Peter Olusanjo",
+        },
+        {
+          name: "panelBody",
+          type: "textarea",
+          defaultValue:
+            "Speaker, teacher, and scholar — equipping believers to flourish with academic rigour and pastoral depth.",
+        },
+        {
+          name: "quote",
+          type: "textarea",
+          defaultValue:
+            "Train yourself to be godly. For physical training is of some value, but godliness has value for all things.",
+        },
+        {
+          name: "quoteCitation",
+          type: "text",
+          defaultValue: "1 Timothy 4:7–8",
+        },
+      ],
     },
     {
       name: "heroRightImages",
@@ -76,6 +210,35 @@ export const Homepage: GlobalConfig = {
       defaultValue: "Wisdom for Everyday Living",
     },
     {
+      name: "wisdomSectionSubtitle",
+      type: "textarea",
+      defaultValue:
+        "Practical wisdom woven across every dimension of life — connected, intentional, and transformative.",
+    },
+    {
+      name: "wisdomSectionCtaLabel",
+      type: "text",
+      defaultValue: "Listen to Peter",
+    },
+    {
+      name: "constellationTopics",
+      type: "array",
+      label: "Section I — constellation topics",
+      admin: {
+        description:
+          "Topic labels for the wisdom constellation. Layout positions are fixed; order matches the visual map.",
+      },
+      fields: [{ name: "label", type: "text", required: true }],
+      defaultValue: [
+        { label: "Relationships" },
+        { label: "Business" },
+        { label: "Finance" },
+        { label: "Career" },
+        { label: "Health" },
+        { label: "Spiritual Growth" },
+      ],
+    },
+    {
       name: "wisdomConstellationHoverImage",
       type: "upload",
       relationTo: "media",
@@ -95,6 +258,39 @@ export const Homepage: GlobalConfig = {
       name: "journeySectionTitle",
       type: "text",
       defaultValue: "The Wisdom Journey",
+    },
+    {
+      name: "journeySteps",
+      type: "array",
+      label: "Section II — journey step copy",
+      minRows: 5,
+      maxRows: 5,
+      fields: [
+        { name: "label", type: "text", required: true },
+        { name: "description", type: "textarea", required: true },
+      ],
+      defaultValue: [
+        {
+          label: "Learn",
+          description: "Receive timeless wisdom rooted in Scripture.",
+        },
+        {
+          label: "Apply",
+          description: "Put truth into practice in daily decisions.",
+        },
+        {
+          label: "Grow",
+          description: "Develop character, competence, and conviction.",
+        },
+        {
+          label: "Influence",
+          description: "Lead others through exemplary living.",
+        },
+        {
+          label: "Impact",
+          description: "Advance Kingdom purposes in your sphere.",
+        },
+      ],
     },
     {
       name: "journeyStepImages",
@@ -187,6 +383,16 @@ export const Homepage: GlobalConfig = {
       name: "ctaButtonLabel",
       type: "text",
       defaultValue: "Subscribe to Wisdom Snippets",
+    },
+    {
+      name: "testimonialsSectionLabel",
+      type: "text",
+      defaultValue: "Voices of Transformation",
+    },
+    {
+      name: "testimonialsSectionTitle",
+      type: "text",
+      defaultValue: "What people are saying",
     },
     {
       name: "featuredArticles",

@@ -1,8 +1,9 @@
 import "server-only";
 
 import type { Homepage, Media } from "@/payload-types";
+import type { HomepageHeroFields } from "@/lib/cms-page-types";
 import {
-  JOURNEY_STEP_META,
+  JOURNEY_STEP_KEYS,
   type JourneyStepKey,
   type ResolvedJourneyStep,
 } from "@/components/home/journey-steps";
@@ -57,32 +58,36 @@ function resolveStepImage(
 }
 
 export async function resolveJourneySteps(
-  homepage?: Homepage | null,
+  homepage?: (Homepage & HomepageHeroFields) | null,
 ): Promise<ResolvedJourneyStep[]> {
   const group = homepage?.journeyStepImages;
+  const copy = homepage?.journeySteps ?? [];
 
-  const ids = JOURNEY_STEP_META.map((step) => {
-    const field = group?.[STEP_MEDIA_FIELDS[step.key]];
+  const ids = JOURNEY_STEP_KEYS.map((step) => {
+    const field = group?.[STEP_MEDIA_FIELDS[step]];
     return typeof field === "number" ? field : null;
   }).filter((id): id is number => id !== null);
 
   const mediaMap = await resolveMediaMap(ids);
 
-  return JOURNEY_STEP_META.map((step) => {
-    const mediaRef = group?.[STEP_MEDIA_FIELDS[step.key]] as
+  return JOURNEY_STEP_KEYS.map((step, index) => {
+    const mediaRef = group?.[STEP_MEDIA_FIELDS[step]] as
       | number
       | Media
       | null
       | undefined;
-    const altField = group?.[STEP_ALT_FIELDS[step.key]];
+    const altField = group?.[STEP_ALT_FIELDS[step]];
+    const stepCopy = copy[index];
 
     return {
-      key: step.key,
-      label: step.label,
-      desc: step.desc,
-      image: resolveStepImage(mediaRef, mediaMap, step.key),
+      key: step,
+      label: stepCopy?.label?.trim() || `Step ${index + 1}`,
+      desc: stepCopy?.description?.trim() || "",
+      image: resolveStepImage(mediaRef, mediaMap, step),
       imageAlt:
-        (typeof altField === "string" && altField.trim()) || step.label,
+        (typeof altField === "string" && altField.trim()) ||
+        stepCopy?.label?.trim() ||
+        `Step ${index + 1}`,
     };
   });
 }

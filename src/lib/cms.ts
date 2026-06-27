@@ -5,11 +5,17 @@ import type {
   Homepage,
   Service,
   Resource,
-  AboutPageGlobal,
   SiteSetting,
   Testimonial,
   YoutubeVideo,
 } from "@/payload-types";
+import type {
+  AboutPageContent,
+  ContactPageGlobal,
+  EventsPageGlobal,
+  ResourcesPageGlobal,
+  ServicesPageGlobal,
+} from "@/lib/cms-page-types";
 import type { YoutubeVideoItem } from "@/lib/youtube";
 import {
   isLegacyDemoYoutubeCatalog,
@@ -23,6 +29,12 @@ function mapYoutube(docs: YoutubeVideo[]): YoutubeVideoItem[] {
     youtubeId: v.youtubeId,
     description: v.description,
   }));
+}
+
+function publishedArticleWhere() {
+  return {
+    status: { equals: "published" as const },
+  };
 }
 
 export async function getHomepageData(): Promise<{
@@ -67,10 +79,11 @@ export async function getHomepageData(): Promise<{
     } else {
       const res = await payload.find({
         collection: "articles",
-        where: { status: { equals: "published" } },
+        where: publishedArticleWhere(),
         sort: "-publishedAt",
         limit: 4,
         depth: 1,
+        draft: false,
       });
       articles = res.docs as Article[];
     }
@@ -213,10 +226,10 @@ export async function getSiteSettings(): Promise<SiteSetting | null> {
   }
 }
 
-export async function getAboutPage(): Promise<AboutPageGlobal | null> {
+export async function getAboutPage(): Promise<AboutPageContent | null> {
   try {
     const payload = await getPayloadClient();
-    return (await payload.findGlobal({ slug: "about-page" })) as AboutPageGlobal;
+    return (await payload.findGlobal({ slug: "about-page" })) as AboutPageContent;
   } catch {
     return null;
   }
@@ -229,21 +242,57 @@ export async function getServices(): Promise<Service[]> {
       collection: "services",
       sort: "order",
       limit: 20,
+      depth: 1,
     });
     return res.docs as Service[];
   } catch {
-    return getDefaultServices();
+    return [];
   }
 }
 
-function getDefaultServices(): Service[] {
-  return [
-    { id: 1, title: "Life Mentoring", slug: "life-mentoring", icon: "mentoring", order: 1, ctaLabel: "Request Inquiry", benefits: [{ benefit: "Personal guidance for godly living" }] },
-    { id: 2, title: "Private Consultancy", slug: "private-consultancy", icon: "consultancy", order: 2, ctaLabel: "Request Inquiry", benefits: [{ benefit: "Confidential strategic counsel" }] },
-    { id: 3, title: "Business Consultancy", slug: "business-consultancy", icon: "business", order: 3, ctaLabel: "Request Inquiry", benefits: [{ benefit: "Kingdom-minded business excellence" }] },
-    { id: 4, title: "Conferences", slug: "conferences", icon: "conference", order: 4, ctaLabel: "Request Inquiry", benefits: [{ benefit: "Transformative gatherings" }] },
-    { id: 5, title: "Speaking Engagements", slug: "speaking-engagements", icon: "speaking", order: 5, ctaLabel: "Request Inquiry", benefits: [{ benefit: "Inspiring audiences with wisdom" }] },
-  ];
+export async function getServicesPage(): Promise<ServicesPageGlobal | null> {
+  try {
+    const payload = await getPayloadClient();
+    return (await payload.findGlobal({
+      slug: "services-page",
+      depth: 1,
+    })) as ServicesPageGlobal;
+  } catch {
+    return null;
+  }
+}
+
+export async function getContactPage(): Promise<ContactPageGlobal | null> {
+  try {
+    const payload = await getPayloadClient();
+    return (await payload.findGlobal({
+      slug: "contact-page",
+    })) as ContactPageGlobal;
+  } catch {
+    return null;
+  }
+}
+
+export async function getEventsPage(): Promise<EventsPageGlobal | null> {
+  try {
+    const payload = await getPayloadClient();
+    return (await payload.findGlobal({
+      slug: "events-page",
+    })) as EventsPageGlobal;
+  } catch {
+    return null;
+  }
+}
+
+export async function getResourcesPage(): Promise<ResourcesPageGlobal | null> {
+  try {
+    const payload = await getPayloadClient();
+    return (await payload.findGlobal({
+      slug: "resources-page",
+    })) as ResourcesPageGlobal;
+  } catch {
+    return null;
+  }
 }
 
 export async function getEvents(): Promise<Event[]> {
@@ -299,10 +348,11 @@ export async function getArticles(): Promise<Article[]> {
     const payload = await getPayloadClient();
     const res = await payload.find({
       collection: "articles",
-      where: { status: { equals: "published" } },
+      where: publishedArticleWhere(),
       sort: "-publishedAt",
       limit: 100,
       depth: 1,
+      draft: false,
     });
     return res.docs as Article[];
   } catch {
@@ -315,9 +365,15 @@ export async function getArticleBySlug(slug: string): Promise<Article | null> {
     const payload = await getPayloadClient();
     const res = await payload.find({
       collection: "articles",
-      where: { slug: { equals: slug } },
+      where: {
+        and: [
+          { slug: { equals: slug } },
+          { status: { equals: "published" } },
+        ],
+      },
       limit: 1,
       depth: 1,
+      draft: false,
     });
     return (res.docs[0] as Article) || null;
   } catch {

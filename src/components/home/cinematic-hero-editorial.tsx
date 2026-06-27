@@ -8,7 +8,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { motion } from "framer-motion";
 import { ArrowRight, ChevronLeft, ChevronRight, Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import type { HeroSlideImages } from "@/lib/hero-images";
+import type { CinematicHeroSlide } from "@/lib/homepage-hero";
 import { cn } from "@/lib/utils";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -180,119 +180,75 @@ function HeroRightPanel({
 }
 
 type Props = {
-  headline: string;
-  subheadline: string;
+  slides: CinematicHeroSlide[];
   channelUrl?: string | null;
-  heroImages: HeroSlideImages;
 };
 
-const pillars = [
-  "Relationships",
-  "Business",
-  "Finance",
-  "Career",
-  "Health",
-  "Spiritual Growth",
-];
-
-type Slide = {
-  id: string;
-  kicker: string;
-  title: string;
-  description: string;
-  imageSrc: string;
-  imageAlt: string;
-  panelTitle: string;
-  panelBody: string;
+type Slide = CinematicHeroSlide & {
   panelExtra?: ReactNode;
 };
 
+function buildPanelExtra(slide: CinematicHeroSlide): ReactNode | undefined {
+  if (slide.id === "mission" && slide.highlights?.length) {
+    return (
+      <div className="grid grid-cols-1 gap-3 border-t border-pln-ivory/10 pt-4 sm:grid-cols-3 sm:gap-4 sm:pt-6 lg:mt-2 lg:pt-8">
+        {slide.highlights.map((item) => (
+          <div key={`${item.label}-${item.value}`}>
+            <p className="font-sans text-[10px] uppercase tracking-[0.2em] text-pln-gold">
+              {item.label}
+            </p>
+            <p className="mt-2 font-display text-sm lg:text-base">{item.value}</p>
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  if (slide.id === "pillars" && slide.pillarLabels?.length) {
+    return (
+      <ul className="mt-4 flex flex-wrap gap-2 sm:mt-6 lg:mt-8">
+        {slide.pillarLabels.map((pillar) => (
+          <li
+            key={pillar}
+            className="border border-pln-ivory/15 px-3 py-1.5 font-sans text-[11px] uppercase tracking-[0.12em] text-pln-ivory/80"
+          >
+            {pillar}
+          </li>
+        ))}
+      </ul>
+    );
+  }
+
+  if (slide.id === "gather" && slide.quote) {
+    return (
+      <blockquote className="mt-4 border-l-2 border-pln-gold pl-5 sm:mt-6 lg:mt-8">
+        <p className="font-body text-sm italic leading-relaxed text-pln-ivory/70">
+          &ldquo;{slide.quote}&rdquo;
+        </p>
+        {slide.quoteCitation && (
+          <cite className="mt-3 block font-sans text-xs uppercase tracking-[0.2em] text-pln-gold not-italic">
+            {slide.quoteCitation}
+          </cite>
+        )}
+      </blockquote>
+    );
+  }
+
+  return undefined;
+}
+
 export function CinematicHeroEditorial({
-  headline,
-  subheadline,
+  slides: heroSlides,
   channelUrl,
-  heroImages,
 }: Props) {
   const sectionRef = useRef<HTMLElement>(null);
   const [active, setActive] = useState(0);
   const [paused, setPaused] = useState(false);
 
-  const slides: Slide[] = [
-    {
-      id: "mission",
-      kicker: "Profitable Living Network",
-      title: headline,
-      description: subheadline,
-      imageSrc: heroImages.mission.src,
-      imageAlt: heroImages.mission.alt,
-      panelTitle: "Godly wisdom. Profitable life.",
-      panelBody:
-        "A Christian mission teaching how to live with excellence in every sphere — rooted in Scripture and proven in experience.",
-      panelExtra: (
-        <div className="grid grid-cols-1 gap-3 border-t border-pln-ivory/10 pt-4 sm:grid-cols-3 sm:gap-4 sm:pt-6 lg:mt-2 lg:pt-8">
-          {[
-            { label: "Weekly", value: "Wisdom Snippets" },
-            { label: "Monthly", value: "School of Wisdom" },
-            { label: "Mission", value: "1 Tim. 4:7–8" },
-          ].map((item) => (
-            <div key={item.value}>
-              <p className="font-sans text-[10px] uppercase tracking-[0.2em] text-pln-gold">
-                {item.label}
-              </p>
-              <p className="mt-2 font-display text-sm lg:text-base">{item.value}</p>
-            </div>
-          ))}
-        </div>
-      ),
-    },
-    {
-      id: "pillars",
-      kicker: "Wisdom for everyday living",
-      title: "Six pillars. One integrated life in Christ.",
-      description:
-        "Practical teaching across relationships, business, finance, career, health, and spiritual growth — connected, intentional, and transformative.",
-      imageSrc: heroImages.pillars.src,
-      imageAlt: heroImages.pillars.alt,
-      panelTitle: "The constellation of wisdom",
-      panelBody:
-        "Each area of life informs the others. PLN helps you apply godly principles with clarity and confidence.",
-      panelExtra: (
-        <ul className="mt-4 flex flex-wrap gap-2 sm:mt-6 lg:mt-8">
-          {pillars.map((pillar) => (
-            <li
-              key={pillar}
-              className="border border-pln-ivory/15 px-3 py-1.5 font-sans text-[11px] uppercase tracking-[0.12em] text-pln-ivory/80"
-            >
-              {pillar}
-            </li>
-          ))}
-        </ul>
-      ),
-    },
-    {
-      id: "gather",
-      kicker: "Join the journey",
-      title: "Learn. Apply. Grow. Influence. Impact.",
-      description:
-        "Every Monday — Wisdom Snippets. Third Friday monthly — School of Wisdom. Step into a community pursuing godliness with purpose.",
-      imageSrc: heroImages.gather.src,
-      imageAlt: heroImages.gather.alt,
-      panelTitle: "Led by Peter Olusanjo",
-      panelBody:
-        "Speaker, teacher, and scholar — equipping believers to flourish with academic rigour and pastoral depth.",
-      panelExtra: (
-        <blockquote className="mt-4 border-l-2 border-pln-gold pl-5 sm:mt-6 lg:mt-8">
-          <p className="font-body text-sm italic leading-relaxed text-pln-ivory/70">
-            &ldquo;Train yourself to be godly. For physical training is of some
-            value, but godliness has value for all things.&rdquo;
-          </p>
-          <cite className="mt-3 block font-sans text-xs uppercase tracking-[0.2em] text-pln-gold not-italic">
-            1 Timothy 4:7–8
-          </cite>
-        </blockquote>
-      ),
-    },
-  ];
+  const slides: Slide[] = heroSlides.map((slide) => ({
+    ...slide,
+    panelExtra: buildPanelExtra(slide),
+  }));
 
   const total = slides.length;
 

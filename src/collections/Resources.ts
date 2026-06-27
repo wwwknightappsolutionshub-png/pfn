@@ -1,10 +1,18 @@
 import type { CollectionConfig } from "payload";
+import {
+  revalidateOnPublicContentChange,
+  revalidateOnPublicContentDelete,
+} from "@/lib/payload-revalidate";
 
 export const Resources: CollectionConfig = {
   slug: "resources",
   admin: {
     useAsTitle: "title",
     defaultColumns: ["title", "category", "resourceType"],
+  },
+  hooks: {
+    afterChange: [revalidateOnPublicContentChange],
+    afterDelete: [revalidateOnPublicContentDelete],
   },
   fields: [
     {

@@ -1,10 +1,12 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
+import { CmsRichText } from "@/components/cms/cms-rich-text";
 import { getArticleBySlug } from "@/lib/cms";
 import { buildMetadata } from "@/lib/seo";
 import { getMediaUrlOrPlaceholder } from "@/lib/media";
 import { ShareButtons } from "@/components/resources/share-buttons";
+import { unstable_noStore as noStore } from "next/cache";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -22,12 +24,16 @@ export async function generateMetadata({ params }: Props) {
 }
 
 export default async function ResourceArticlePage({ params }: Props) {
+  noStore();
+
   const { slug } = await params;
   const article = await getArticleBySlug(slug);
   if (!article) notFound();
 
   const cover = getMediaUrlOrPlaceholder(article.coverImage, "article");
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3010";
+
+  const articleContent = (article as { content?: unknown }).content;
 
   return (
     <article className="pb-24">
@@ -73,11 +79,11 @@ export default async function ResourceArticlePage({ params }: Props) {
             {article.excerpt}
           </p>
         )}
-        <p className="mt-8 text-pln-charcoal-muted dark:text-pln-ivory/60">
-          Full article content is managed in the CMS rich text editor. Connect
-          the database and publish articles to render formatted content here via
-          the Lexical renderer.
-        </p>
+        {articleContent ? (
+          <div className="mt-8">
+            <CmsRichText data={articleContent} variant="article" />
+          </div>
+        ) : null}
       </div>
     </article>
   );

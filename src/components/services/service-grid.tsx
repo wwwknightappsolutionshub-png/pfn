@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { ElementType } from "react";
 import type { Service } from "@/payload-types";
+import { CmsRichText } from "@/components/cms/cms-rich-text";
 import {
   Briefcase,
   Mic2,
@@ -29,7 +30,7 @@ export function ServiceGrid({ services }: { services: Service[] }) {
             className={cn(
               "grid gap-8 rounded-2xl border border-pln-navy/10 bg-white p-8 shadow-[0_8px_28px_rgba(11,20,38,0.06)] transition-colors",
               "hover:border-pln-gold-on-light/35 hover:shadow-[0_12px_36px_rgba(11,20,38,0.1)]",
-              "lg:grid-cols-12 lg:items-center lg:p-12",
+              "lg:grid-cols-12 lg:items-start lg:p-12",
             )}
           >
             <div className="flex items-start gap-6 lg:col-span-4">
@@ -45,7 +46,14 @@ export function ServiceGrid({ services }: { services: Service[] }) {
                 </h2>
               </div>
             </div>
-            <div className="lg:col-span-5">
+            <div className="space-y-5 lg:col-span-5">
+              {(service as Service & { description?: unknown }).description !=
+              null ? (
+                <CmsRichText
+                  data={(service as Service & { description?: unknown }).description}
+                  variant="light"
+                />
+              ) : null}
               {service.benefits && service.benefits.length > 0 && (
                 <ul className="space-y-3">
                   {service.benefits.map((b, j) => (
@@ -60,7 +68,7 @@ export function ServiceGrid({ services }: { services: Service[] }) {
                 </ul>
               )}
             </div>
-            <div className="flex items-center lg:col-span-3 lg:justify-end">
+            <div className="flex items-center lg:col-span-3 lg:justify-end lg:pt-2">
               <Link
                 href={`/contact?service=${service.slug}`}
                 className="inline-flex items-center font-sans text-xs font-semibold uppercase tracking-[0.25em] text-pln-gold-on-light transition-colors hover:text-pln-section-light-heading"

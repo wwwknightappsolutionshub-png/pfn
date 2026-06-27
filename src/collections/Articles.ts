@@ -1,10 +1,18 @@
 import type { CollectionConfig } from "payload";
+import {
+  revalidateOnPublicContentChange,
+  revalidateOnPublicContentDelete,
+} from "@/lib/payload-revalidate";
 
 export const Articles: CollectionConfig = {
   slug: "articles",
   admin: {
     useAsTitle: "title",
     defaultColumns: ["title", "category", "status", "publishedAt"],
+  },
+  hooks: {
+    afterChange: [revalidateOnPublicContentChange],
+    afterDelete: [revalidateOnPublicContentDelete],
   },
   versions: {
     drafts: true,

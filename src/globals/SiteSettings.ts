@@ -1,8 +1,21 @@
 import type { GlobalConfig } from "payload";
+import { createGlobalRevalidateHook } from "@/lib/payload-revalidate";
 
 export const SiteSettings: GlobalConfig = {
   slug: "site-settings",
   label: "Site Settings",
+  hooks: {
+    afterChange: [
+      createGlobalRevalidateHook([
+        "/",
+        "/about",
+        "/services",
+        "/events",
+        "/resources",
+        "/contact",
+      ]),
+    ],
+  },
   fields: [
     {
       name: "siteName",
@@ -13,6 +26,19 @@ export const SiteSettings: GlobalConfig = {
       name: "tagline",
       type: "text",
       defaultValue: "Godly wisdom for a profitable life",
+    },
+    {
+      name: "footerDescription",
+      type: "textarea",
+      label: "Footer description",
+      defaultValue:
+        "A Christian mission dedicated to teaching how to live a godly and profitable life — wisdom for everyday living.",
+    },
+    {
+      name: "footerScripture",
+      type: "text",
+      label: "Footer scripture reference",
+      defaultValue: "1 Timothy 4:7–8",
     },
     {
       name: "contactEmail",
