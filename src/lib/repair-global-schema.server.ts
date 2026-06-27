@@ -7,6 +7,16 @@ type ColumnDef = readonly [string, string];
 
 const STALE_TABLE_PREFIXES = ["__new_", "_homepage_v", "_about_page_v"];
 
+const GLOBAL_TABLE_PREFIXES = [
+  "homepage",
+  "about_page",
+  "site_settings",
+  "services_page",
+  "contact_page",
+  "events_page",
+  "resources_page",
+];
+
 const HOMEPAGE_COLUMNS: ColumnDef[] = [
   ["hero_mission_slide_kicker", "TEXT"],
   ["hero_mission_slide_panel_title", "TEXT"],
@@ -23,8 +33,16 @@ const HOMEPAGE_COLUMNS: ColumnDef[] = [
   ["hero_gather_slide_panel_body", "TEXT"],
   ["hero_gather_slide_quote", "TEXT"],
   ["hero_gather_slide_quote_citation", "TEXT"],
+  ["hero_right_images_mission_slide_id", "INTEGER"],
+  ["hero_right_images_mission_alt", "TEXT"],
+  ["hero_right_images_pillars_slide_id", "INTEGER"],
+  ["hero_right_images_pillars_alt", "TEXT"],
+  ["hero_right_images_gather_slide_id", "INTEGER"],
+  ["hero_right_images_gather_alt", "TEXT"],
   ["wisdom_section_subtitle", "TEXT"],
   ["wisdom_section_cta_label", "TEXT"],
+  ["wisdom_constellation_hover_image_id", "INTEGER"],
+  ["wisdom_constellation_hover_image_alt", "TEXT"],
   ["testimonials_section_label", "TEXT"],
   ["testimonials_section_title", "TEXT"],
   ["journey_step_images_learn_image_id", "INTEGER"],
@@ -119,11 +137,33 @@ async function addMissingColumns(
   return added;
 }
 
+async function dropGlobalIndexes(client: Client): Promise<number> {
+  const indexes = await client.execute(
+    "SELECT name, tbl_name FROM sqlite_master WHERE type='index' ORDER BY name",
+  );
+
+  let dropped = 0;
+  for (const row of indexes.rows) {
+    const name = String(row.name);
+    const table = String(row.tbl_name ?? "");
+    if (name.startsWith("sqlite_")) continue;
+    const isGlobalTable = GLOBAL_TABLE_PREFIXES.some(
+      (prefix) => table === prefix || table.startsWith(`${prefix}_`),
+    );
+    if (!isGlobalTable) continue;
+    await client.execute(`DROP INDEX IF EXISTS \`${name}\``);
+    dropped++;
+  }
+
+  return dropped;
+}
+
 export async function repairGlobalSchemaBeforePush(): Promise<{
   database: "sqlite" | "postgres" | "skipped";
   homepageColumnsAdded: number;
   aboutColumnsAdded: number;
   siteSettingsColumnsAdded: number;
+  indexesDropped: number;
 }> {
   const sqliteUrl = resolveSqliteUrl();
   if (!sqliteUrl) {
@@ -132,6 +172,7 @@ export async function repairGlobalSchemaBeforePush(): Promise<{
       homepageColumnsAdded: 0,
       aboutColumnsAdded: 0,
       siteSettingsColumnsAdded: 0,
+      indexesDropped: 0,
     };
   }
 
@@ -153,11 +194,13 @@ export async function repairGlobalSchemaBeforePush(): Promise<{
     "site_settings",
     SITE_SETTINGS_COLUMNS,
   );
+  const indexesDropped = await dropGlobalIndexes(client);
 
   return {
     database: "sqlite",
     homepageColumnsAdded,
     aboutColumnsAdded,
     siteSettingsColumnsAdded,
+    indexesDropped,
   };
 }

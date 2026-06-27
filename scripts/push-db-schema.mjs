@@ -37,7 +37,7 @@ if (!res.ok) {
 console.log("Schema push complete.");
 if (data.repair) {
   console.log(
-    `Repair: ${data.repair.database}, homepage +${data.repair.homepageColumnsAdded}, about +${data.repair.aboutColumnsAdded}, settings +${data.repair.siteSettingsColumnsAdded}`,
+    `Repair: ${data.repair.database}, homepage +${data.repair.homepageColumnsAdded}, about +${data.repair.aboutColumnsAdded}, settings +${data.repair.siteSettingsColumnsAdded}, indexes dropped ${data.repair.indexesDropped}`,
   );
 }
 if (data.globals?.length) {
