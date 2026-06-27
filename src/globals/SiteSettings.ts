@@ -20,7 +20,7 @@ export const SiteSettings: GlobalConfig = {
     {
       name: "siteName",
       type: "text",
-      defaultValue: "Profitable Living Network",
+      defaultValue: "148Inspirations",
     },
     {
       name: "tagline",
@@ -67,7 +67,7 @@ export const SiteSettings: GlobalConfig = {
       type: "textarea",
       label: "WhatsApp default message",
       defaultValue:
-        "Hello Profitable Living Network, I would like to get in touch.",
+        "Hello 148Inspirations, I would like to get in touch.",
     },
     {
       name: "youtubeChannelUrl",

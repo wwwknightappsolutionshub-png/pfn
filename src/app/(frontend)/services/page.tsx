@@ -6,7 +6,7 @@ import { resolveMediaUrl } from "@/lib/media.server";
 import { unstable_noStore as noStore } from "next/cache";
 
 export const metadata = buildMetadata({
-  title: "Services | Profitable Living Network",
+  title: "Services | 148Inspirations",
   description:
     "Life mentoring, private consultancy, business consultancy, conferences, and speaking engagements.",
   path: "/services",

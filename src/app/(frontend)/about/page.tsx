@@ -5,9 +5,9 @@ import { getMediaUrlOrPlaceholder } from "@/lib/media";
 import { unstable_noStore as noStore } from "next/cache";
 
 export const metadata = buildMetadata({
-  title: "About | Profitable Living Network",
+  title: "About | 148Inspirations",
   description:
-    "Meet Peter Olusanjo and discover the mission of Profitable Living Network — teaching a godly and profitable life.",
+    "Meet Peter Olusanjo and discover the mission of 148Inspirations — teaching a godly and profitable life.",
   path: "/about",
 });
 

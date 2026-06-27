@@ -12,7 +12,7 @@ import { PETER_YOUTUBE_CHANNEL } from "@/lib/peter-youtube-videos";
 import { unstable_noStore as noStore } from "next/cache";
 
 export const metadata = buildMetadata({
-  title: "Resources | Profitable Living Network",
+  title: "Resources | 148Inspirations",
   description:
     "Articles, videos, Wisdom Snippets, School of Wisdom archives, and downloads.",
   path: "/resources",

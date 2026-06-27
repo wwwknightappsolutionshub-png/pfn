@@ -21,7 +21,7 @@ export async function syncPeterYoutubeVideos(payload: Payload) {
         youtubeId: video.youtubeId,
         description:
           video.description ??
-          "Teaching from Peter Olusanjo on the Profitable Living Network YouTube channel.",
+          "Teaching from Peter Olusanjo on the 148Inspirations YouTube channel.",
         featured: video.featured ?? false,
         showOnHomepage: video.showOnHomepage ?? false,
         order: video.order,

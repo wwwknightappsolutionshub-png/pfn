@@ -22,7 +22,7 @@ export async function GET() {
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0">
   <channel>
-    <title>Profitable Living Network</title>
+    <title>148Inspirations</title>
     <link>${siteUrl}</link>
     <description>Godly wisdom for a profitable life</description>
     ${items}

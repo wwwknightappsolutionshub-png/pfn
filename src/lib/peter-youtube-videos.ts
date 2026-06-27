@@ -121,7 +121,7 @@ export function mapPeterYoutubeVideos(): YoutubeVideoItem[] {
     youtubeId: v.youtubeId,
     description:
       v.description ??
-      "Teaching from Peter Olusanjo on the Profitable Living Network YouTube channel.",
+      "Teaching from Peter Olusanjo on the 148Inspirations YouTube channel.",
   }));
 }
 

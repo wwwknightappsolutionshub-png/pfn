@@ -22,7 +22,7 @@ const montserrat = Montserrat({
 });
 
 export const metadata: Metadata = buildMetadata({
-  title: "Profitable Living Network | Godly Wisdom for a Profitable Life",
+  title: "148Inspirations | Godly Wisdom for a Profitable Life",
   description:
     "A Christian mission dedicated to teaching how to live a godly and profitable life through practical wisdom. Led by Peter Olusanjo.",
   path: "/",

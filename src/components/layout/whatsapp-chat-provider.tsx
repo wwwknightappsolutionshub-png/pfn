@@ -152,7 +152,7 @@ function WhatsAppChatPanel({
         </div>
         <div className="min-w-0 flex-1">
           <p className="truncate font-sans text-sm font-semibold">
-            Profitable Living Network
+            148Inspirations
           </p>
           <p className="font-sans text-xs text-white/80">
             Typically replies within a few hours

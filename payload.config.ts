@@ -35,18 +35,22 @@ const usePostgres = Boolean(
 
 const sqlitePath = path.resolve(dirname, "data", "pln.db");
 
+/** When true, allow drizzle schema push (used by npm run db:push-schema). */
+const schemaPush = process.env.PAYLOAD_DB_PUSH === "true";
+
 const db = usePostgres
   ? postgresAdapter({
       pool: {
         connectionString: process.env.DATABASE_URI || "",
       },
+      push: schemaPush,
     })
   : sqliteAdapter({
       client: {
         url: process.env.DATABASE_URL || `file:${sqlitePath}`,
       },
-      // Avoid destructive auto-push (table rebuild) — use npm run db:repair after schema changes
-      push: false,
+      // Avoid destructive auto-push — use npm run db:push-schema after schema changes
+      push: schemaPush,
     });
 
 export default buildConfig({

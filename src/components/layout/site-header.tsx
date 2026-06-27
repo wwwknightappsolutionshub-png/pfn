@@ -52,10 +52,7 @@ export function SiteHeader() {
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 sm:py-4 lg:px-10 lg:py-5">
         <Link href="/" className="group flex min-w-0 flex-col">
           <span className="truncate font-display text-lg tracking-tight text-pln-ivory sm:text-xl lg:text-2xl">
-            Profitable Living
-          </span>
-          <span className="font-sans text-[10px] uppercase tracking-[0.35em] text-pln-gold">
-            Network
+            148Inspirations
           </span>
         </Link>
 

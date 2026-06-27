@@ -11,7 +11,7 @@ export const AboutPage: GlobalConfig = {
     {
       name: "heroKicker",
       type: "text",
-      defaultValue: "Profitable Living Network",
+      defaultValue: "148Inspirations",
     },
     {
       name: "heroTitle",

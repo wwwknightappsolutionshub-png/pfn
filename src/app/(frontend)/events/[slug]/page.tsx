@@ -15,7 +15,7 @@ export async function generateMetadata({ params }: Props) {
   if (!event) return {};
   return buildMetadata({
     title: `${event.title} | PLN Events`,
-    description: `${event.title} — Profitable Living Network`,
+    description: `${event.title} — 148Inspirations`,
     path: `/events/${slug}`,
   });
 }

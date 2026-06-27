@@ -65,7 +65,7 @@ export function buildCinematicHeroSlides(
   return [
     {
       id: "mission",
-      kicker: mission?.kicker || "Profitable Living Network",
+      kicker: mission?.kicker || "148Inspirations",
       title: homepage.cinematicHeadline || "",
       description: homepage.cinematicSubheadline || "",
       imageSrc: heroImages.mission.src,

@@ -4,7 +4,7 @@ import { buildMetadata } from "@/lib/seo";
 import { unstable_noStore as noStore } from "next/cache";
 
 export const metadata = buildMetadata({
-  title: "Events | Profitable Living Network",
+  title: "Events | 148Inspirations",
   description:
     "Wisdom Snippets every Monday, School of Wisdom monthly, conferences and speaking engagements.",
   path: "/events",

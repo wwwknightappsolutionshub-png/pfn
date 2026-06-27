@@ -147,7 +147,7 @@ export async function runSeed(payload: Payload) {
         _status: "published",
         featured: articleIds.length < 4,
         publishedAt: new Date(Date.now() - articleIds.length * 86400000 * 7).toISOString(),
-        content: richText(a.excerpt, "Profitable Living Network equips you with practical, biblical wisdom for everyday life.", "Join Wisdom Snippets every Monday and School of Wisdom monthly."),
+        content: richText(a.excerpt, "148Inspirations equips you with practical, biblical wisdom for everyday life.", "Join Wisdom Snippets every Monday and School of Wisdom monthly."),
       },
     });
     articleIds.push(Number(doc.id));
@@ -202,7 +202,7 @@ export async function runSeed(payload: Payload) {
         order: s.order,
         ctaLabel: "Request Inquiry",
         benefits: s.benefits.map((benefit) => ({ benefit })),
-        description: richText(`${s.title} through Profitable Living Network.`, "Contact us to discuss scope and scheduling."),
+        description: richText(`${s.title} through 148Inspirations.`, "Contact us to discuss scope and scheduling."),
       },
     });
   }
@@ -229,7 +229,7 @@ export async function runSeed(payload: Payload) {
   await payload.updateGlobal({
     slug: "site-settings",
     data: {
-      siteName: "Profitable Living Network",
+      siteName: "148Inspirations",
       tagline: "Godly wisdom for a profitable life",
       contactEmail: "hello@profitableliving.network",
       whatsappEnabled: true,
@@ -257,7 +257,7 @@ export async function runSeed(payload: Payload) {
         { platform: "facebook", url: PETER_SOCIAL_URLS.facebook },
       ],
       seo: {
-        defaultTitle: "Profitable Living Network",
+        defaultTitle: "148Inspirations",
         defaultDescription: "Teaching how to live a godly and profitable life.",
         keywords: "Christian wisdom, Peter Olusanjo, mentoring",
       },
@@ -325,7 +325,7 @@ export async function runSeed(payload: Payload) {
           detail: "Scholarship in practice",
         },
       ],
-      biography: richText("Peter Olusanjo founded Profitable Living Network to teach how to live a godly and profitable life."),
+      biography: richText("Peter Olusanjo founded 148Inspirations to teach how to live a godly and profitable life."),
       speakingMinistry: richText("Peter speaks at conferences, universities, and churches internationally."),
       teachingMinistry: richText("Through Wisdom Snippets and School of Wisdom, Peter makes deep wisdom accessible."),
       academicProfile: richText("His academic background informs rigorous, biblically faithful teaching."),

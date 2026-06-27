@@ -29,7 +29,7 @@ export function buildMetadata({
       title,
       description,
       url,
-      siteName: "Profitable Living Network",
+      siteName: "148Inspirations",
       type,
       images: [{ url: ogImage, width: 1200, height: 630 }],
     },
@@ -46,7 +46,7 @@ export function organizationJsonLd() {
   return {
     "@context": "https://schema.org",
     "@type": "Organization",
-    name: "Profitable Living Network",
+    name: "148Inspirations",
     url: siteUrl,
     description:
       "A Christian mission dedicated to teaching how to live a godly and profitable life through practical wisdom.",

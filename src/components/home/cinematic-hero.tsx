@@ -88,7 +88,7 @@ export function CinematicHero({ headline, subheadline }: Props) {
       <div className="relative z-10 mx-auto w-full max-w-7xl px-6 lg:px-10">
         <p className="hero-line mb-8 h-px w-24 origin-left bg-pln-gold" />
         <p className="mb-6 font-sans text-xs uppercase tracking-[0.4em] text-pln-gold">
-          Profitable Living Network
+          148Inspirations
         </p>
         <h1 className="max-w-5xl font-display text-[clamp(2.5rem,8vw,5.5rem)] leading-[1.05] tracking-tight">
           {words.map((word, i) => (

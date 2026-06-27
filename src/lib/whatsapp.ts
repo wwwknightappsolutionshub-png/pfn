@@ -3,7 +3,7 @@ import type { SiteSetting } from "@/payload-types";
 export const DEFAULT_WHATSAPP_NUMBER = "+447746798923";
 
 export const DEFAULT_WHATSAPP_MESSAGE =
-  "Hello Profitable Living Network, I would like to get in touch.";
+  "Hello 148Inspirations, I would like to get in touch.";
 
 export function normalizeWhatsAppNumber(phone: string): string {
   return phone.replace(/\D/g, "");

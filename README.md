@@ -1,6 +1,6 @@
-# Profitable Living Network (PLN)
+# 148Inspirations (PLN)
 
-Premium editorial website and headless CMS for **Profitable Living Network** — a Christian mission teaching godly and profitable living through practical wisdom.
+Premium editorial website and headless CMS for **148Inspirations** — a Christian mission teaching godly and profitable living through practical wisdom.
 
 Built as a **standalone project** (separate from StreetRank).
 

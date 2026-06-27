@@ -26,7 +26,7 @@ export const Homepage: GlobalConfig = {
         {
           name: "kicker",
           type: "text",
-          defaultValue: "Profitable Living Network",
+          defaultValue: "148Inspirations",
         },
         {
           name: "panelTitle",
