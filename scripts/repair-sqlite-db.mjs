@@ -71,13 +71,18 @@ const HOMEPAGE_COLUMNS = [
 const ABOUT_PAGE_COLUMNS = [
   ["hero_kicker", "TEXT"],
   ["hero_title", "TEXT"],
+  ["mission_statement", "TEXT"],
   ["scripture_reference", "TEXT"],
   ["portrait_id", "INTEGER"],
   ["biography_section_label", "TEXT"],
+  ["biography", "TEXT"],
   ["ministries_section_label", "TEXT"],
   ["speaking_ministry_title", "TEXT"],
+  ["speaking_ministry", "TEXT"],
   ["teaching_ministry_title", "TEXT"],
+  ["teaching_ministry", "TEXT"],
   ["academic_profile_title", "TEXT"],
+  ["academic_profile", "TEXT"],
   ["academic_journey_title", "TEXT"],
   ["academic_journey_subtitle", "TEXT"],
 ];

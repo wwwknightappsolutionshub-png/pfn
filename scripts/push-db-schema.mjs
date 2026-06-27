@@ -40,6 +40,14 @@ if (data.repair) {
     `Repair: ${data.repair.database}, homepage +${data.repair.homepageColumnsAdded}, about +${data.repair.aboutColumnsAdded}, settings +${data.repair.siteSettingsColumnsAdded}, indexes dropped ${data.repair.indexesDropped}`,
   );
 }
+if (data.pushAttempts) {
+  console.log(`Push attempts: ${data.pushAttempts}`);
+}
+if (data.pushRepairs?.length) {
+  for (const line of data.pushRepairs) {
+    console.log(`  repair: ${line}`);
+  }
+}
 if (data.globals?.length) {
   for (const slug of data.globals) {
     console.log(`  ✓ ${slug}`);

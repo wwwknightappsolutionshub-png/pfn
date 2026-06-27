@@ -71,13 +71,18 @@ const SITE_SETTINGS_COLUMNS: ColumnDef[] = [
 const ABOUT_PAGE_COLUMNS: ColumnDef[] = [
   ["hero_kicker", "TEXT"],
   ["hero_title", "TEXT"],
+  ["mission_statement", "TEXT"],
   ["scripture_reference", "TEXT"],
   ["portrait_id", "INTEGER"],
   ["biography_section_label", "TEXT"],
+  ["biography", "TEXT"],
   ["ministries_section_label", "TEXT"],
   ["speaking_ministry_title", "TEXT"],
+  ["speaking_ministry", "TEXT"],
   ["teaching_ministry_title", "TEXT"],
+  ["teaching_ministry", "TEXT"],
   ["academic_profile_title", "TEXT"],
+  ["academic_profile", "TEXT"],
   ["academic_journey_title", "TEXT"],
   ["academic_journey_subtitle", "TEXT"],
 ];
@@ -207,6 +212,77 @@ async function dropAllUserIndexes(client: Client): Promise<number> {
   }
 
   return dropped;
+}
+
+function inferSqliteColumnType(columnName: string): string {
+  if (columnName.endsWith("_id")) return "INTEGER";
+  if (
+    columnName.endsWith("_enabled") ||
+    columnName.startsWith("has_") ||
+    columnName.startsWith("is_")
+  ) {
+    return "INTEGER";
+  }
+  return "TEXT";
+}
+
+function extractFailedQuery(message: string): string | null {
+  const failedQuery = message.match(/Failed query:\s*([\s\S]+?)(?:\nparams:|$)/i);
+  return failedQuery?.[1]?.trim() ?? null;
+}
+
+export async function repairSqlitePushFailure(
+  error: unknown,
+): Promise<{ applied: boolean; actions: string[] }> {
+  const message = error instanceof Error ? error.message : String(error);
+  const sqliteUrl = resolveSqliteUrl();
+  if (!sqliteUrl) {
+    return { applied: false, actions: [] };
+  }
+
+  const failedQuery = extractFailedQuery(message) ?? message;
+  const actions: string[] = [];
+  const client = createClient({ url: sqliteUrl });
+
+  await dropStaleTables(client);
+
+  const indexMatch = failedQuery.match(
+    /CREATE INDEX `([^`]+)` ON `([^`]+)` \(`([^`]+)`\)/i,
+  );
+  if (indexMatch) {
+    const [, indexName, tableName, columnName] = indexMatch;
+    const added = await addMissingColumns(client, tableName, [
+      [columnName, inferSqliteColumnType(columnName)],
+    ]);
+    if (added > 0) {
+      actions.push(`added ${tableName}.${columnName}`);
+    }
+    await client.execute(`DROP INDEX IF EXISTS \`${indexName}\``);
+    actions.push(`dropped index ${indexName}`);
+  }
+
+  const addColumnMatch = failedQuery.match(
+    /ALTER TABLE `([^`]+)` ADD COLUMN `?([^`'\s]+)`?/i,
+  );
+  if (addColumnMatch) {
+    const [, tableName, columnName] = addColumnMatch;
+    const added = await addMissingColumns(client, tableName, [
+      [columnName, inferSqliteColumnType(columnName)],
+    ]);
+    if (added > 0) {
+      actions.push(`added ${tableName}.${columnName}`);
+    }
+  }
+
+  if (actions.length === 0) {
+    await dropStaleTables(client);
+    const dropped = await dropAllUserIndexes(client);
+    if (dropped > 0) {
+      actions.push(`dropped ${dropped} indexes`);
+    }
+  }
+
+  return { applied: actions.length > 0, actions };
 }
 
 export async function repairGlobalSchemaBeforePush(): Promise<{
