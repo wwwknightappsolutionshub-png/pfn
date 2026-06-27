@@ -16,6 +16,7 @@
     "sync:youtube": "node scripts/sync-youtube-videos.mjs",
     "fetch:youtube": "node scripts/fetch-youtube-channel.mjs the148peter",
     "db:migrate-homepage": "node scripts/migrate-homepage-columns.mjs",
+    "db:repair": "node scripts/repair-sqlite-db.mjs",
     "db:push-schema": "node scripts/push-db-schema.mjs",
     "db:repair": "node scripts/repair-sqlite-db.mjs",
     "db:init": "node --import tsx scripts/init-sqlite-db.mjs"
