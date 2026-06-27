@@ -7,16 +7,6 @@ type ColumnDef = readonly [string, string];
 
 const STALE_TABLE_PREFIXES = ["__new_", "_homepage_v", "_about_page_v"];
 
-const GLOBAL_TABLE_PREFIXES = [
-  "homepage",
-  "about_page",
-  "site_settings",
-  "services_page",
-  "contact_page",
-  "events_page",
-  "resources_page",
-];
-
 const HOMEPAGE_COLUMNS: ColumnDef[] = [
   ["hero_mission_slide_kicker", "TEXT"],
   ["hero_mission_slide_panel_title", "TEXT"],
@@ -59,10 +49,30 @@ const HOMEPAGE_COLUMNS: ColumnDef[] = [
   ["featured_teachings_hero_image_alt", "TEXT"],
 ];
 
+const SITE_SETTINGS_COLUMNS: ColumnDef[] = [
+  ["site_name", "TEXT"],
+  ["tagline", "TEXT"],
+  ["contact_email", "TEXT"],
+  ["whatsapp_enabled", "INTEGER"],
+  ["whatsapp_number", "TEXT"],
+  ["whatsapp_default_message", "TEXT"],
+  ["youtube_channel_url", "TEXT"],
+  ["university_profile_url", "TEXT"],
+  ["analytics_id", "TEXT"],
+  ["newsletter_enabled", "INTEGER"],
+  ["seo_default_title", "TEXT"],
+  ["seo_default_description", "TEXT"],
+  ["seo_og_image_id", "INTEGER"],
+  ["seo_keywords", "TEXT"],
+  ["footer_description", "TEXT"],
+  ["footer_scripture", "TEXT"],
+];
+
 const ABOUT_PAGE_COLUMNS: ColumnDef[] = [
   ["hero_kicker", "TEXT"],
   ["hero_title", "TEXT"],
   ["scripture_reference", "TEXT"],
+  ["portrait_id", "INTEGER"],
   ["biography_section_label", "TEXT"],
   ["ministries_section_label", "TEXT"],
   ["speaking_ministry_title", "TEXT"],
@@ -72,12 +82,58 @@ const ABOUT_PAGE_COLUMNS: ColumnDef[] = [
   ["academic_journey_subtitle", "TEXT"],
 ];
 
-const SITE_SETTINGS_COLUMNS: ColumnDef[] = [
-  ["whatsapp_enabled", "INTEGER"],
-  ["whatsapp_number", "TEXT"],
-  ["whatsapp_default_message", "TEXT"],
-  ["footer_description", "TEXT"],
-  ["footer_scripture", "TEXT"],
+const SERVICES_PAGE_COLUMNS: ColumnDef[] = [
+  ["hero_kicker", "TEXT"],
+  ["hero_title", "TEXT"],
+  ["hero_description", "TEXT"],
+  ["hero_image_id", "INTEGER"],
+  ["hero_image_alt", "TEXT"],
+];
+
+const CONTACT_PAGE_COLUMNS: ColumnDef[] = [
+  ["left_kicker", "TEXT"],
+  ["left_title", "TEXT"],
+  ["left_description", "TEXT"],
+  ["right_kicker", "TEXT"],
+  ["right_title", "TEXT"],
+  ["right_description", "TEXT"],
+];
+
+const EVENTS_PAGE_COLUMNS: ColumnDef[] = [
+  ["hero_kicker", "TEXT"],
+  ["hero_title", "TEXT"],
+  ["hero_description", "TEXT"],
+];
+
+const RESOURCES_PAGE_COLUMNS: ColumnDef[] = [
+  ["hero_kicker", "TEXT"],
+  ["hero_title", "TEXT"],
+  ["hero_description", "TEXT"],
+  ["youtube_section_label", "TEXT"],
+  ["youtube_section_title", "TEXT"],
+  ["youtube_section_subtitle", "TEXT"],
+  ["library_kicker", "TEXT"],
+  ["library_title", "TEXT"],
+];
+
+// Scalar columns that may predate nested groups on homepage
+const HOMEPAGE_SCALAR_COLUMNS: ColumnDef[] = [
+  ["cinematic_headline", "TEXT"],
+  ["cinematic_subheadline", "TEXT"],
+  ["wisdom_section_title", "TEXT"],
+  ["journey_section_title", "TEXT"],
+  ["featured_teachings_title", "TEXT"],
+  ["events_section_title", "TEXT"],
+  ["cta_title", "TEXT"],
+  ["cta_description", "TEXT"],
+  ["cta_button_label", "TEXT"],
+  ["videos_section_title", "TEXT"],
+  ["videos_section_subtitle", "TEXT"],
+];
+
+const HOMEPAGE_COLUMNS_FULL: ColumnDef[] = [
+  ...HOMEPAGE_SCALAR_COLUMNS,
+  ...HOMEPAGE_COLUMNS,
 ];
 
 function resolveSqliteUrl(): string | null {
@@ -137,20 +193,15 @@ async function addMissingColumns(
   return added;
 }
 
-async function dropGlobalIndexes(client: Client): Promise<number> {
+async function dropAllUserIndexes(client: Client): Promise<number> {
   const indexes = await client.execute(
-    "SELECT name, tbl_name FROM sqlite_master WHERE type='index' ORDER BY name",
+    "SELECT name FROM sqlite_master WHERE type='index' ORDER BY name",
   );
 
   let dropped = 0;
   for (const row of indexes.rows) {
     const name = String(row.name);
-    const table = String(row.tbl_name ?? "");
     if (name.startsWith("sqlite_")) continue;
-    const isGlobalTable = GLOBAL_TABLE_PREFIXES.some(
-      (prefix) => table === prefix || table.startsWith(`${prefix}_`),
-    );
-    if (!isGlobalTable) continue;
     await client.execute(`DROP INDEX IF EXISTS \`${name}\``);
     dropped++;
   }
@@ -163,6 +214,10 @@ export async function repairGlobalSchemaBeforePush(): Promise<{
   homepageColumnsAdded: number;
   aboutColumnsAdded: number;
   siteSettingsColumnsAdded: number;
+  servicesPageColumnsAdded: number;
+  contactPageColumnsAdded: number;
+  eventsPageColumnsAdded: number;
+  resourcesPageColumnsAdded: number;
   indexesDropped: number;
 }> {
   const sqliteUrl = resolveSqliteUrl();
@@ -172,6 +227,10 @@ export async function repairGlobalSchemaBeforePush(): Promise<{
       homepageColumnsAdded: 0,
       aboutColumnsAdded: 0,
       siteSettingsColumnsAdded: 0,
+      servicesPageColumnsAdded: 0,
+      contactPageColumnsAdded: 0,
+      eventsPageColumnsAdded: 0,
+      resourcesPageColumnsAdded: 0,
       indexesDropped: 0,
     };
   }
@@ -182,7 +241,7 @@ export async function repairGlobalSchemaBeforePush(): Promise<{
   const homepageColumnsAdded = await addMissingColumns(
     client,
     "homepage",
-    HOMEPAGE_COLUMNS,
+    HOMEPAGE_COLUMNS_FULL,
   );
   const aboutColumnsAdded = await addMissingColumns(
     client,
@@ -194,13 +253,37 @@ export async function repairGlobalSchemaBeforePush(): Promise<{
     "site_settings",
     SITE_SETTINGS_COLUMNS,
   );
-  const indexesDropped = await dropGlobalIndexes(client);
+  const servicesPageColumnsAdded = await addMissingColumns(
+    client,
+    "services_page",
+    SERVICES_PAGE_COLUMNS,
+  );
+  const contactPageColumnsAdded = await addMissingColumns(
+    client,
+    "contact_page",
+    CONTACT_PAGE_COLUMNS,
+  );
+  const eventsPageColumnsAdded = await addMissingColumns(
+    client,
+    "events_page",
+    EVENTS_PAGE_COLUMNS,
+  );
+  const resourcesPageColumnsAdded = await addMissingColumns(
+    client,
+    "resources_page",
+    RESOURCES_PAGE_COLUMNS,
+  );
+  const indexesDropped = await dropAllUserIndexes(client);
 
   return {
     database: "sqlite",
     homepageColumnsAdded,
     aboutColumnsAdded,
     siteSettingsColumnsAdded,
+    servicesPageColumnsAdded,
+    contactPageColumnsAdded,
+    eventsPageColumnsAdded,
+    resourcesPageColumnsAdded,
     indexesDropped,
   };
 }
