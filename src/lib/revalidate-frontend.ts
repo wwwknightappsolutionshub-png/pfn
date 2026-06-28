@@ -1,8 +1,19 @@
 import { revalidatePath } from "next/cache";
 
+function canRevalidateFrontend(): boolean {
+  if (process.env.PAYLOAD_SEEDING === "true") return false;
+  return true;
+}
+
 export function revalidateFrontendPaths(paths: string[]) {
+  if (!canRevalidateFrontend()) return;
+
   for (const path of paths) {
-    revalidatePath(path);
+    try {
+      revalidatePath(path);
+    } catch {
+      // No Next.js static generation context (CLI seed, scripts, etc.)
+    }
   }
 }
 
@@ -21,7 +32,11 @@ export function revalidateAllPublicPages() {
 
 export function revalidateArticlePages(slug?: string | null) {
   revalidateFrontendPaths(["/", "/resources"]);
-  if (slug) {
-    revalidatePath(`/resources/${slug}`);
+  if (slug && canRevalidateFrontend()) {
+    try {
+      revalidatePath(`/resources/${slug}`);
+    } catch {
+      /* CLI / non-Next context */
+    }
   }
 }

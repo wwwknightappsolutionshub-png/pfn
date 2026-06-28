@@ -12,6 +12,7 @@ if (!process.env.PAYLOAD_SECRET?.trim()) {
 }
 
 const replace = process.env.SEED_REPLACE === "true";
+process.env.PAYLOAD_SEEDING = "true";
 console.log("Seeding content directly (CLI, no HTTP)...");
 if (replace) {
   console.log("Mode: replace existing demo collections");
