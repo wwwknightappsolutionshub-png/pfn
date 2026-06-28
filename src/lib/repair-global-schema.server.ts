@@ -121,6 +121,7 @@ const RESOURCES_PAGE_COLUMNS: ColumnDef[] = [
   ["youtube_section_subtitle", "TEXT"],
   ["library_kicker", "TEXT"],
   ["library_title", "TEXT"],
+  ["show_library_section", "INTEGER"],
 ];
 
 // Scalar columns that may predate nested groups on homepage

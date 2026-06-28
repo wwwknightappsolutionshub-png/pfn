@@ -57,19 +57,21 @@ export default async function ResourcesPage() {
           variant="light"
         />
 
-        <div className="pln-container pb-16 sm:pb-20 lg:pb-28">
-          <div className="border-t border-pln-navy/10 pt-12 sm:pt-16 lg:pt-28">
-            <p className="font-sans text-xs font-semibold uppercase tracking-[0.35em] text-pln-gold-on-light">
-              {page?.libraryKicker}
-            </p>
-            <h2 className="mt-4 max-w-2xl border-l-4 border-pln-gold-on-light pl-4 pln-section-title text-pln-section-light-heading sm:mt-5 sm:pl-6">
-              {page?.libraryTitle}
-            </h2>
-            <div className="mt-8 sm:mt-12">
-              <ResourcesHub resources={resources} articles={articles} />
+        {page?.showLibrarySection === true ? (
+          <div className="pln-container pb-16 sm:pb-20 lg:pb-28">
+            <div className="border-t border-pln-navy/10 pt-12 sm:pt-16 lg:pt-28">
+              <p className="font-sans text-xs font-semibold uppercase tracking-[0.35em] text-pln-gold-on-light">
+                {page?.libraryKicker}
+              </p>
+              <h2 className="mt-4 max-w-2xl border-l-4 border-pln-gold-on-light pl-4 pln-section-title text-pln-section-light-heading sm:mt-5 sm:pl-6">
+                {page?.libraryTitle}
+              </h2>
+              <div className="mt-8 sm:mt-12">
+                <ResourcesHub resources={resources} articles={articles} />
+              </div>
             </div>
           </div>
-        </div>
+        ) : null}
       </section>
     </div>
   );

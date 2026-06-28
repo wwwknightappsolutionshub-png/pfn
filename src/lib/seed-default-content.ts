@@ -219,4 +219,5 @@ export const SEED_RESOURCES_PAGE = {
     "Browse Wisdom Snippets and teachings from Peter Olusanjo on YouTube. Swipe on mobile or move your cursor on desktop to scroll through the library.",
   libraryKicker: "Library",
   libraryTitle: "Articles & downloads",
+  showLibrarySection: false,
 } as const;

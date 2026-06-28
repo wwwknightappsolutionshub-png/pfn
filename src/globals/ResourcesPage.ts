@@ -50,5 +50,15 @@ export const ResourcesPage: GlobalConfig = {
       type: "text",
       defaultValue: "Articles & downloads",
     },
+    {
+      name: "showLibrarySection",
+      type: "checkbox",
+      label: "Show library section",
+      defaultValue: false,
+      admin: {
+        description:
+          "Show the Articles & downloads grid below the YouTube section. Uncheck to hide the whole library block.",
+      },
+    },
   ],
 };

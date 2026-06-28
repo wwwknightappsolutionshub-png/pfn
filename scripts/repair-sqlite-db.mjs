@@ -140,6 +140,7 @@ const RESOURCES_PAGE_COLUMNS = [
   ["youtube_section_subtitle", "TEXT"],
   ["library_kicker", "TEXT"],
   ["library_title", "TEXT"],
+  ["show_library_section", "INTEGER"],
 ];
 
 const client = createClient({ url: `file:${dbPath}` });

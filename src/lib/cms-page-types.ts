@@ -35,6 +35,7 @@ export type ResourcesPageGlobal = {
   youtubeSectionSubtitle?: string | null;
   libraryKicker?: string | null;
   libraryTitle?: string | null;
+  showLibrarySection?: boolean | null;
 };
 
 export type HomepageHeroFields = {
