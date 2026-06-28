@@ -94,6 +94,8 @@ const SERVICES_PAGE_COLUMNS: ColumnDef[] = [
   ["hero_image_alt", "TEXT"],
 ];
 
+const SERVICES_COLLECTION_COLUMNS: ColumnDef[] = [["show_benefits", "INTEGER"]];
+
 const CONTACT_PAGE_COLUMNS: ColumnDef[] = [
   ["left_kicker", "TEXT"],
   ["left_title", "TEXT"],
@@ -348,6 +350,7 @@ export async function repairGlobalSchemaBeforePush(): Promise<{
     "resources_page",
     RESOURCES_PAGE_COLUMNS,
   );
+  await addMissingColumns(client, "services", SERVICES_COLLECTION_COLUMNS);
   const indexesDropped = await dropAllUserIndexes(client);
 
   return {
