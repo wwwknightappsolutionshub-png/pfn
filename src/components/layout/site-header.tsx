@@ -3,8 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Menu, Moon, Sun, X } from "lucide-react";
-import { useTheme } from "next-themes";
+import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const nav = [
@@ -18,7 +17,6 @@ const nav = [
 
 export function SiteHeader() {
   const pathname = usePathname();
-  const { theme, setTheme } = useTheme();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -71,14 +69,6 @@ export function SiteHeader() {
               {item.label}
             </Link>
           ))}
-          <button
-            type="button"
-            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-            className="text-pln-ivory/75 transition hover:text-pln-gold"
-            aria-label="Toggle dark mode"
-          >
-            {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
-          </button>
         </nav>
 
         <button
@@ -109,15 +99,6 @@ export function SiteHeader() {
               {item.label}
             </Link>
           ))}
-          <button
-            type="button"
-            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-            className="mt-4 flex items-center gap-2 font-sans text-sm uppercase tracking-[0.2em] text-pln-ivory/80 hover:text-pln-gold"
-            aria-label="Toggle dark mode"
-          >
-            {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
-            <span>{theme === "dark" ? "Light mode" : "Dark mode"}</span>
-          </button>
         </div>
       )}
     </header>
