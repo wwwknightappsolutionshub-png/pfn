@@ -33,7 +33,22 @@ export const Services: CollectionConfig = {
     {
       name: "benefits",
       type: "array",
+      minRows: 0,
+      admin: {
+        description:
+          "Optional bullet points. Delete all rows, or turn off “Show bullet points” below, to hide them on the site.",
+      },
       fields: [{ name: "benefit", type: "text", required: true }],
+    },
+    {
+      name: "showBenefits",
+      type: "checkbox",
+      label: "Show bullet points",
+      defaultValue: true,
+      admin: {
+        description:
+          "Uncheck to hide all bullet points for this service on the public site.",
+      },
     },
     {
       name: "icon",

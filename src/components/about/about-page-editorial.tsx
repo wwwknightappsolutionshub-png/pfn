@@ -4,18 +4,15 @@ import { AcademicJourney } from "@/components/about/academic-journey";
 import { MinistriesSection } from "@/components/about/ministries-section";
 import { CmsRichText } from "@/components/cms/cms-rich-text";
 import type { AboutPageContent } from "@/lib/cms-page-types";
-import type { SiteSetting } from "@/payload-types";
 
 export type AboutPageViewProps = {
   about: AboutPageContent | null;
   portraitUrl: string;
-  universityProfileUrl?: SiteSetting["universityProfileUrl"];
 };
 
 export function AboutPageEditorial({
   about,
   portraitUrl,
-  universityProfileUrl,
 }: AboutPageViewProps) {
   return (
     <div className="pb-16 sm:pb-24">
@@ -72,18 +69,19 @@ export function AboutPageEditorial({
             )}
           </div>
           <AcademicJourney credentials={about?.credentials} />
-          {universityProfileUrl && (
+          {about?.universityProfileUrl?.trim() ? (
             <div className="mt-12 text-center">
               <Link
-                href={universityProfileUrl}
+                href={about.universityProfileUrl.trim()}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-block border border-pln-gold-on-light px-8 py-3 font-sans text-xs font-semibold uppercase tracking-[0.25em] text-pln-gold-on-light transition hover:bg-pln-gold-on-light hover:text-pln-section-light-bg"
               >
-                View university profile
+                {about.universityProfileLabel?.trim() ||
+                  "View university profile"}
               </Link>
             </div>
-          )}
+          ) : null}
         </div>
       </section>
     </div>

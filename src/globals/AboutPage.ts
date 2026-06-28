@@ -99,6 +99,22 @@ export const AboutPage: GlobalConfig = {
         "Four milestones of scholarship in service of faithful, practical teaching.",
     },
     {
+      name: "universityProfileUrl",
+      type: "text",
+      label: "University profile URL",
+      defaultValue: "https://www.abdn.ac.uk/people/peter.olayiwola",
+      admin: {
+        description:
+          "Link for the button below the academic journey section. Leave empty to hide the button.",
+      },
+    },
+    {
+      name: "universityProfileLabel",
+      type: "text",
+      label: "University profile button label",
+      defaultValue: "View university profile",
+    },
+    {
       name: "credentials",
       type: "array",
       fields: [

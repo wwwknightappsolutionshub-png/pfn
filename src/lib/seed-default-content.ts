@@ -135,6 +135,8 @@ export const SEED_ABOUT_PAGE = {
   academicJourneyTitle: "Academic Journey",
   academicJourneySubtitle:
     "Four milestones of scholarship in service of faithful, practical teaching.",
+  universityProfileUrl: "https://www.abdn.ac.uk/people/peter.olayiwola",
+  universityProfileLabel: "View university profile",
   missionStatement: [
     "148Inspirations is a Christian mission dedicated to teaching how to live a godly and profitable life — disciplining ourselves for godliness, for it holds promise for the present life and also for the life to come.",
   ],

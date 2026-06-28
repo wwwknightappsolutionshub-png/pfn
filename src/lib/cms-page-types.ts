@@ -87,6 +87,8 @@ export type AboutPageContent = {
   academicProfile?: unknown;
   academicJourneyTitle?: string | null;
   academicJourneySubtitle?: string | null;
+  universityProfileUrl?: string | null;
+  universityProfileLabel?: string | null;
   credentials?: {
     title: string;
     institution: string;

@@ -1,5 +1,5 @@
 import { AboutPageEditorial } from "@/components/about/about-page-editorial";
-import { getAboutPage, getSiteSettings } from "@/lib/cms";
+import { getAboutPage } from "@/lib/cms";
 import { buildMetadata } from "@/lib/seo";
 import { getMediaUrlOrPlaceholder } from "@/lib/media";
 import { unstable_noStore as noStore } from "next/cache";
@@ -15,13 +15,11 @@ export default async function AboutPage() {
   noStore();
 
   const about = await getAboutPage();
-  const settings = await getSiteSettings();
 
   return (
     <AboutPageEditorial
       about={about}
       portraitUrl={getMediaUrlOrPlaceholder(about?.portrait, "portrait")}
-      universityProfileUrl={settings?.universityProfileUrl}
     />
   );
 }

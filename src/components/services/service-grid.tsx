@@ -54,7 +54,10 @@ export function ServiceGrid({ services }: { services: Service[] }) {
                   variant="light"
                 />
               ) : null}
-              {service.benefits && service.benefits.length > 0 && (
+              {(service as Service & { showBenefits?: boolean | null }).showBenefits !==
+                false &&
+                service.benefits &&
+                service.benefits.length > 0 && (
                 <ul className="space-y-3">
                   {service.benefits.map((b, j) => (
                     <li

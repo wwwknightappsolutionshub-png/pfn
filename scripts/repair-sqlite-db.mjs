@@ -85,6 +85,8 @@ const ABOUT_PAGE_COLUMNS = [
   ["academic_profile", "TEXT"],
   ["academic_journey_title", "TEXT"],
   ["academic_journey_subtitle", "TEXT"],
+  ["university_profile_url", "TEXT"],
+  ["university_profile_label", "TEXT"],
 ];
 
 const SITE_SETTINGS_COLUMNS = [

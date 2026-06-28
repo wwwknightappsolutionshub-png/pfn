@@ -78,11 +78,6 @@ export const SiteSettings: GlobalConfig = {
       },
     },
     {
-      name: "universityProfileUrl",
-      type: "text",
-      label: "University Profile URL",
-    },
-    {
       name: "streamingPlatforms",
       label: "Streaming Platforms",
       type: "array",

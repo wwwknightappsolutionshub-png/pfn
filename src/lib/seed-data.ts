@@ -541,7 +541,6 @@ async function seedGlobals(
       whatsappNumber: DEFAULT_WHATSAPP_NUMBER,
       whatsappDefaultMessage: DEFAULT_WHATSAPP_MESSAGE,
       youtubeChannelUrl: DEMO_YOUTUBE_CHANNEL,
-      universityProfileUrl: "https://www.nottingham.ac.uk",
       streamingPlatforms: [
         { platform: "instagram", url: PETER_SOCIAL_URLS.instagram },
         { platform: "youtube", url: DEMO_YOUTUBE_CHANNEL },
