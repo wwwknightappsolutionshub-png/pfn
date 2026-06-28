@@ -1,4 +1,3 @@
-import prompts from "prompts";
 import type { DrizzleAdapter } from "@payloadcms/drizzle/types";
 
 /**
@@ -33,30 +32,14 @@ export async function pushDevSchemaNonInteractive(
         );
       }
     } else {
-      let message = `Warnings detected during schema push: \n\n${warnings.join("\n")}\n\n`;
+      let message = `Schema push requires confirmation:\n\n${warnings.join("\n")}\n`;
       if (hasDataLoss) {
         message +=
-          "DATA LOSS WARNING: Possible data loss detected if schema is pushed.\n\n";
+          "\nDATA LOSS WARNING: Possible data loss detected if schema is pushed.\n";
       }
-      message += "Accept warnings and push schema to database?";
-
-      const { confirm: acceptWarnings } = await prompts(
-        {
-          name: "confirm",
-          type: "confirm",
-          initial: false,
-          message,
-        },
-        {
-          onCancel: () => {
-            process.exit(0);
-          },
-        },
-      );
-
-      if (!acceptWarnings) {
-        process.exit(0);
-      }
+      message +=
+        "\nRe-run with PAYLOAD_AUTO_ACCEPT_SCHEMA_PUSH=true to apply on VPS.";
+      throw new Error(message);
     }
   }
 
