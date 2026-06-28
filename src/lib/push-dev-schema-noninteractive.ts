@@ -1,5 +1,10 @@
 import type { DrizzleAdapter } from "@payloadcms/drizzle/types";
 
+type SchemaPushAdapter = DrizzleAdapter & {
+  extensions?: { postgis?: boolean };
+  tablesFilter?: string;
+};
+
 /**
  * Like @payloadcms/drizzle pushDevSchema, but auto-accepts warnings when
  * PAYLOAD_AUTO_ACCEPT_SCHEMA_PUSH=true (VPS CLI / non-interactive).
@@ -8,7 +13,8 @@ export async function pushDevSchemaNonInteractive(
   adapter: DrizzleAdapter,
 ): Promise<void> {
   const { pushSchema } = adapter.requireDrizzleKit();
-  const { extensions = {}, tablesFilter } = adapter;
+  const pushAdapter = adapter as SchemaPushAdapter;
+  const { tablesFilter, extensions = {} } = pushAdapter;
 
   const { apply, hasDataLoss, warnings } = await pushSchema(
     adapter.schema,
