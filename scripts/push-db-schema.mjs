@@ -3,12 +3,14 @@
  *
  * Run on VPS (app must be running on port 3010):
  *   npm run db:push-schema
+ *
+ * Uses localhost by default so nginx/reverse-proxy timeouts are avoided.
+ * Set PUSH_SCHEMA_URL=https://your-domain.com only if pushing from another machine.
  */
 import "dotenv/config";
 
 const baseUrl =
   process.env.PUSH_SCHEMA_URL ||
-  process.env.NEXT_PUBLIC_SITE_URL ||
   "http://127.0.0.1:3010";
 const secret = process.env.PAYLOAD_SECRET?.trim();
 
@@ -25,6 +27,7 @@ const res = await fetch(url, {
   headers: {
     "x-push-secret": secret,
   },
+  signal: AbortSignal.timeout(10 * 60 * 1000),
 });
 
 const data = await res.json().catch(() => ({}));
