@@ -57,9 +57,10 @@ export const SiteSettings: GlobalConfig = {
       name: "whatsappNumber",
       type: "text",
       label: "WhatsApp number",
-      defaultValue: "+447746798923",
+      defaultValue: "+447356068483",
       admin: {
-        description: "Include country code, e.g. +447746798923",
+        description:
+          "Opens WhatsApp directly when visitors click the chat button. Include country code, e.g. +447356068483",
       },
     },
     {

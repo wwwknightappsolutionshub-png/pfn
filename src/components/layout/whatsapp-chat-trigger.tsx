@@ -1,9 +1,7 @@
-"use client";
-
 import { cn } from "@/lib/utils";
-import { useWhatsAppChatOptional } from "@/components/layout/whatsapp-chat-provider";
 
 type Props = {
+  href: string;
   className?: string;
   variant?: "dark" | "light" | "brand";
   showLabel?: boolean;
@@ -24,28 +22,27 @@ function WhatsAppIcon({ className }: { className?: string }) {
 }
 
 export function WhatsAppChatTrigger({
+  href,
   className,
   variant = "brand",
   showLabel = true,
   label = "WhatsApp",
 }: Props) {
-  const chat = useWhatsAppChatOptional();
-
   return (
-    <button
-      type="button"
-      onClick={() => chat?.openChat()}
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
       className={cn(
         "inline-flex items-center gap-3 transition",
         variant === "brand" &&
           "rounded-full bg-[#25D366] px-5 py-3 font-sans text-sm font-semibold text-white shadow-[0_8px_24px_rgba(37,211,102,0.35)] hover:bg-[#20bd5a]",
-        variant === "dark" &&
-          "text-pln-ivory/80 hover:text-[#25D366]",
+        variant === "dark" && "text-pln-ivory/80 hover:text-[#25D366]",
         variant === "light" &&
           "text-pln-section-light-heading hover:text-[#25D366]",
         className,
       )}
-      aria-label={`${label} (opens chat on this page)`}
+      aria-label={`${label} (opens WhatsApp)`}
     >
       <span
         className={cn(
@@ -56,6 +53,6 @@ export function WhatsAppChatTrigger({
         <WhatsAppIcon className="h-full w-full" />
       </span>
       {showLabel && <span>{label}</span>}
-    </button>
+    </a>
   );
 }

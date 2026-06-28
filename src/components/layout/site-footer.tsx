@@ -74,6 +74,7 @@ export async function SiteFooter() {
               {whatsapp.enabled && (
                 <li>
                   <WhatsAppChatTrigger
+                    href={whatsapp.href}
                     variant="dark"
                     showLabel
                     label="WhatsApp"

@@ -1,6 +1,6 @@
 import type { SiteSetting } from "@/payload-types";
 
-export const DEFAULT_WHATSAPP_NUMBER = "+447746798923";
+export const DEFAULT_WHATSAPP_NUMBER = "+447356068483";
 
 export const DEFAULT_WHATSAPP_MESSAGE =
   "Hello 148Inspirations, I would like to get in touch.";

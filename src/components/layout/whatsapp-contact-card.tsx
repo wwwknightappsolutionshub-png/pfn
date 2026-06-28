@@ -14,12 +14,12 @@ export async function WhatsAppContactCard() {
         WhatsApp
       </p>
       <p className="mt-3 font-body text-sm leading-relaxed text-pln-ivory/80">
-        Prefer a quick chat? Open the chat here on this page — no new tabs or
-        redirects.
+        Prefer a quick chat? Message us directly on WhatsApp.
       </p>
       <WhatsAppChatTrigger
+        href={whatsapp.href}
         variant="brand"
-        label="Open WhatsApp chat"
+        label="Message on WhatsApp"
         className="mt-5"
       />
       <p className="mt-3 font-sans text-xs text-pln-ivory/50">
