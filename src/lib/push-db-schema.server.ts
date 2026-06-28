@@ -1,63 +1,9 @@
 import "server-only";
 
-import { pushDevSchema } from "@payloadcms/drizzle";
-import type { DrizzleAdapter } from "@payloadcms/drizzle/types";
 import { getPayloadClient } from "@/lib/payload";
-import {
-  repairGlobalSchemaBeforePush,
-  repairSqlitePushFailure,
-} from "@/lib/repair-global-schema.server";
+import { runDbPushSchemaWithPayload } from "@/lib/run-db-push-schema";
 
-const GLOBAL_SLUGS = [
-  "homepage",
-  "site-settings",
-  "about-page",
-  "services-page",
-  "contact-page",
-  "events-page",
-  "resources-page",
-] as const;
-
-const MAX_PUSH_ATTEMPTS = 20;
-
-export async function runDbPushSchema(): Promise<{
-  globals: string[];
-  repair: Awaited<ReturnType<typeof repairGlobalSchemaBeforePush>>;
-  pushAttempts: number;
-  pushRepairs: string[];
-}> {
-  process.env.PAYLOAD_FORCE_DRIZZLE_PUSH = "true";
-
-  const repair = await repairGlobalSchemaBeforePush();
-  const pushRepairs: string[] = [];
-  let pushAttempts = 0;
-
+export async function runDbPushSchema() {
   const payload = await getPayloadClient();
-
-  while (pushAttempts < MAX_PUSH_ATTEMPTS) {
-    pushAttempts++;
-    try {
-      await pushDevSchema(payload.db as DrizzleAdapter);
-      break;
-    } catch (error) {
-      if (pushAttempts >= MAX_PUSH_ATTEMPTS) {
-        throw error;
-      }
-
-      const failureRepair = await repairSqlitePushFailure(error);
-      if (!failureRepair.applied) {
-        throw error;
-      }
-
-      pushRepairs.push(
-        `attempt ${pushAttempts}: ${failureRepair.actions.join(", ")}`,
-      );
-    }
-  }
-
-  for (const slug of GLOBAL_SLUGS) {
-    await payload.findGlobal({ slug, depth: 0 });
-  }
-
-  return { globals: [...GLOBAL_SLUGS], repair, pushAttempts, pushRepairs };
+  return runDbPushSchemaWithPayload(payload);
 }
