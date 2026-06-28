@@ -48,10 +48,13 @@ if (!res.ok) {
 console.log("Seed complete.");
 if (data.stats) {
   console.log(
-    `Globals: ${data.stats.globals}, articles: ${data.stats.articles}, events: ${data.stats.events}, youtube: ${data.stats.youtubeVideos}`,
+    `Globals: ${data.stats.globals}, services: ${data.stats.services}, articles: ${data.stats.articles}, events: ${data.stats.events}, youtube: ${data.stats.youtubeVideos}`,
   );
+  if (data.stats.backfilledCollections?.length) {
+    console.log(`Backfilled: ${data.stats.backfilledCollections.join(", ")}`);
+  }
   console.log(
-    `Collections seeded: ${data.stats.collectionsSeeded ? "yes" : "globals only"}, replace: ${data.stats.replace}`,
+    `Collections seeded: ${data.stats.collectionsSeeded ? "all" : "globals + empty only"}, replace: ${data.stats.replace}`,
   );
 }
 console.log("\nRestart if needed: pm2 restart pln");

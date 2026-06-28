@@ -129,6 +129,31 @@ async function collectionCount(
   return res.totalDocs;
 }
 
+async function loadRelationIds(payload: Payload) {
+  const [articles, events, youtube] = await Promise.all([
+    payload.find({
+      collection: "articles",
+      where: { status: { equals: "published" } },
+      sort: "-publishedAt",
+      limit: 6,
+    }),
+    payload.find({ collection: "events", sort: "startDate", limit: 4 }),
+    payload.find({ collection: "youtube-videos", sort: "order", limit: 4 }),
+  ]);
+
+  let youtubeIds = youtube.docs.map((doc) => Number(doc.id));
+  if (youtubeIds.length === 0) {
+    const synced = await syncPeterYoutubeVideos(payload);
+    youtubeIds = synced.ids;
+  }
+
+  return {
+    articleIds: articles.docs.map((doc) => Number(doc.id)),
+    eventIds: events.docs.map((doc) => Number(doc.id)),
+    youtubeIds,
+  };
+}
+
 async function clearCollections(payload: Payload) {
   for (const slug of COLLECTIONS) {
     const res = await payload.find({ collection: slug, limit: 500 });
@@ -136,6 +161,200 @@ async function clearCollections(payload: Payload) {
       await payload.delete({ collection: slug, id: doc.id });
     }
   }
+}
+
+async function seedServicesCollection(payload: Payload) {
+  const servicesData = [
+    {
+      title: "Life Mentoring",
+      slug: "life-mentoring",
+      icon: "mentoring" as const,
+      order: 1,
+      description: richText(
+        "One-to-one guidance for spiritual growth, major decisions, and godly living.",
+        "Walk alongside Peter for accountability rooted in Scripture and clarity for the season you are in.",
+      ),
+      benefits: [
+        "One-to-one guidance for spiritual growth",
+        "Accountability rooted in Scripture",
+        "Clarity for major life decisions",
+      ],
+    },
+    {
+      title: "Private Consultancy",
+      slug: "private-consultancy",
+      icon: "consultancy" as const,
+      order: 2,
+      description: richText(
+        "Confidential counsel for leaders navigating complex personal or ministry situations.",
+        "Biblical frameworks applied with discretion and excellence.",
+      ),
+      benefits: [
+        "Confidential counsel for leaders",
+        "Biblical frameworks for complex situations",
+        "Excellence-driven engagement",
+      ],
+    },
+    {
+      title: "Business Consultancy",
+      slug: "business-consultancy",
+      icon: "business" as const,
+      order: 3,
+      description: richText(
+        "Kingdom-minded strategy for organisations that want ethical growth and lasting impact.",
+        "Align team culture, decision-making, and stewardship with godly values.",
+      ),
+      benefits: [
+        "Kingdom-minded strategy",
+        "Ethical growth planning",
+        "Team culture aligned with godly values",
+      ],
+    },
+    {
+      title: "Conferences",
+      slug: "conferences",
+      icon: "conference" as const,
+      order: 4,
+      description: richText(
+        "Transformative gatherings for churches, corporates, and leadership communities.",
+        "Custom themes designed for fellowship, teaching, and Kingdom impact.",
+      ),
+      benefits: [
+        "Transformative gatherings",
+        "Corporate and church partnerships",
+        "Custom themes",
+      ],
+    },
+    {
+      title: "Speaking Engagements",
+      slug: "speaking-engagements",
+      icon: "speaking" as const,
+      order: 5,
+      description: richText(
+        "Inspiring keynotes for academic, ministry, and marketplace audiences.",
+        "International availability with academic rigour and pastoral warmth.",
+      ),
+      benefits: [
+        "Inspiring keynotes",
+        "Academic and ministry settings",
+        "International availability",
+      ],
+    },
+  ];
+
+  for (const s of servicesData) {
+    await payload.create({
+      collection: "services",
+      data: {
+        title: s.title,
+        slug: s.slug,
+        icon: s.icon,
+        order: s.order,
+        ctaLabel: "Request Inquiry",
+        showBenefits: true,
+        description: s.description,
+        benefits: s.benefits.map((benefit) => ({ benefit })),
+      },
+    });
+  }
+}
+
+async function seedResourcesCollection(payload: Payload) {
+  const resourcesData = [
+    {
+      title: "Wisdom Snippets Workbook (PDF)",
+      slug: "wisdom-snippets-workbook",
+      category: "downloads" as const,
+      resourceType: "file" as const,
+      description: "Reflection questions for weekly teaching.",
+    },
+    {
+      title: "School of Wisdom Session Archive",
+      slug: "school-of-wisdom-archive",
+      category: "school-of-wisdom" as const,
+      resourceType: "external" as const,
+      description: "Past session outlines and study notes.",
+      externalUrl: "/events",
+    },
+    {
+      title: "Introduction to Profitable Living",
+      slug: "intro-profitable-living-video",
+      category: "videos" as const,
+      resourceType: "video" as const,
+      description: "The vision of 148Inspirations in twelve minutes.",
+      videoUrl: `https://www.youtube.com/watch?v=${DEMO_YOUTUBE_VIDEOS[0].youtubeId}`,
+    },
+    {
+      title: "Leadership Prayer Guide",
+      slug: "leadership-prayer-guide",
+      category: "downloads" as const,
+      resourceType: "file" as const,
+      description: "Daily prayers for marketplace leaders.",
+    },
+  ];
+
+  for (const r of resourcesData) {
+    await payload.create({ collection: "resources", data: r });
+  }
+}
+
+async function seedTestimonialsCollection(
+  payload: Payload,
+  media: SeedMediaIds,
+) {
+  for (const t of [
+    {
+      name: "Sarah Adeyemi",
+      position: "Business Owner, Lagos",
+      testimonial:
+        "Peter's teaching gave me a framework for decisions I had struggled with for years.",
+      image: media.testimonial1Img,
+      order: 1,
+    },
+    {
+      name: "James Whitfield",
+      position: "Church Elder, Nottingham",
+      testimonial:
+        "School of Wisdom has transformed how our leadership team disciples new believers.",
+      image: media.testimonial2Img,
+      order: 2,
+    },
+    {
+      name: "Dr. Amara Okafor",
+      position: "University Lecturer",
+      testimonial:
+        "Rare combination of academic excellence and pastoral warmth.",
+      image: media.testimonial3Img,
+      order: 3,
+    },
+  ]) {
+    await payload.create({
+      collection: "testimonials",
+      data: { ...t, featured: true },
+    });
+  }
+}
+
+async function seedMissingCollections(
+  payload: Payload,
+  media: SeedMediaIds,
+): Promise<string[]> {
+  const seeded: string[] = [];
+
+  if ((await collectionCount(payload, "services")) === 0) {
+    await seedServicesCollection(payload);
+    seeded.push("services");
+  }
+  if ((await collectionCount(payload, "resources")) === 0) {
+    await seedResourcesCollection(payload);
+    seeded.push("resources");
+  }
+  if ((await collectionCount(payload, "testimonials")) === 0) {
+    await seedTestimonialsCollection(payload, media);
+    seeded.push("testimonials");
+  }
+
+  return seeded;
 }
 
 async function ensureSeedMedia(payload: Payload): Promise<SeedMediaIds> {
@@ -361,167 +580,9 @@ async function seedCollections(
     eventIds.push(Number(doc.id));
   }
 
-  const servicesData = [
-    {
-      title: "Life Mentoring",
-      slug: "life-mentoring",
-      icon: "mentoring" as const,
-      order: 1,
-      description: richText(
-        "One-to-one guidance for spiritual growth, major decisions, and godly living.",
-        "Walk alongside Peter for accountability rooted in Scripture and clarity for the season you are in.",
-      ),
-      benefits: [
-        "One-to-one guidance for spiritual growth",
-        "Accountability rooted in Scripture",
-        "Clarity for major life decisions",
-      ],
-    },
-    {
-      title: "Private Consultancy",
-      slug: "private-consultancy",
-      icon: "consultancy" as const,
-      order: 2,
-      description: richText(
-        "Confidential counsel for leaders navigating complex personal or ministry situations.",
-        "Biblical frameworks applied with discretion and excellence.",
-      ),
-      benefits: [
-        "Confidential counsel for leaders",
-        "Biblical frameworks for complex situations",
-        "Excellence-driven engagement",
-      ],
-    },
-    {
-      title: "Business Consultancy",
-      slug: "business-consultancy",
-      icon: "business" as const,
-      order: 3,
-      description: richText(
-        "Kingdom-minded strategy for organisations that want ethical growth and lasting impact.",
-        "Align team culture, decision-making, and stewardship with godly values.",
-      ),
-      benefits: [
-        "Kingdom-minded strategy",
-        "Ethical growth planning",
-        "Team culture aligned with godly values",
-      ],
-    },
-    {
-      title: "Conferences",
-      slug: "conferences",
-      icon: "conference" as const,
-      order: 4,
-      description: richText(
-        "Transformative gatherings for churches, corporates, and leadership communities.",
-        "Custom themes designed for fellowship, teaching, and Kingdom impact.",
-      ),
-      benefits: [
-        "Transformative gatherings",
-        "Corporate and church partnerships",
-        "Custom themes",
-      ],
-    },
-    {
-      title: "Speaking Engagements",
-      slug: "speaking-engagements",
-      icon: "speaking" as const,
-      order: 5,
-      description: richText(
-        "Inspiring keynotes for academic, ministry, and marketplace audiences.",
-        "International availability with academic rigour and pastoral warmth.",
-      ),
-      benefits: [
-        "Inspiring keynotes",
-        "Academic and ministry settings",
-        "International availability",
-      ],
-    },
-  ];
-
-  for (const s of servicesData) {
-    await payload.create({
-      collection: "services",
-      data: {
-        title: s.title,
-        slug: s.slug,
-        icon: s.icon,
-        order: s.order,
-        ctaLabel: "Request Inquiry",
-        description: s.description,
-        benefits: s.benefits.map((benefit) => ({ benefit })),
-      },
-    });
-  }
-
-  const resourcesData = [
-    {
-      title: "Wisdom Snippets Workbook (PDF)",
-      slug: "wisdom-snippets-workbook",
-      category: "downloads" as const,
-      resourceType: "file" as const,
-      description: "Reflection questions for weekly teaching.",
-    },
-    {
-      title: "School of Wisdom Session Archive",
-      slug: "school-of-wisdom-archive",
-      category: "school-of-wisdom" as const,
-      resourceType: "external" as const,
-      description: "Past session outlines and study notes.",
-      externalUrl: "/events",
-    },
-    {
-      title: "Introduction to Profitable Living",
-      slug: "intro-profitable-living-video",
-      category: "videos" as const,
-      resourceType: "video" as const,
-      description: "The vision of 148Inspirations in twelve minutes.",
-      videoUrl: `https://www.youtube.com/watch?v=${DEMO_YOUTUBE_VIDEOS[0].youtubeId}`,
-    },
-    {
-      title: "Leadership Prayer Guide",
-      slug: "leadership-prayer-guide",
-      category: "downloads" as const,
-      resourceType: "file" as const,
-      description: "Daily prayers for marketplace leaders.",
-    },
-  ];
-
-  for (const r of resourcesData) {
-    await payload.create({ collection: "resources", data: r });
-  }
-
-  for (const t of [
-    {
-      name: "Sarah Adeyemi",
-      position: "Business Owner, Lagos",
-      testimonial:
-        "Peter's teaching gave me a framework for decisions I had struggled with for years.",
-      image: media.testimonial1Img,
-      order: 1,
-    },
-    {
-      name: "James Whitfield",
-      position: "Church Elder, Nottingham",
-      testimonial:
-        "School of Wisdom has transformed how our leadership team disciples new believers.",
-      image: media.testimonial2Img,
-      order: 2,
-    },
-    {
-      name: "Dr. Amara Okafor",
-      position: "University Lecturer",
-      testimonial:
-        "Rare combination of academic excellence and pastoral warmth.",
-      image: media.testimonial3Img,
-      order: 3,
-    },
-  ]) {
-    await payload.create({
-      collection: "testimonials",
-      data: { ...t, featured: true },
-    });
-  }
+  await seedServicesCollection(payload);
+  await seedResourcesCollection(payload);
+  await seedTestimonialsCollection(payload, media);
 
   const { ids: youtubeIds } = await syncPeterYoutubeVideos(payload);
 
@@ -648,38 +709,25 @@ export async function runSeed(payload: Payload, options: SeedOptions = {}) {
     eventIds: [] as number[],
     youtubeIds: [] as number[],
   };
+  let backfilledCollections: string[] = [];
 
   if (shouldSeedCollections) {
     relations = await seedCollections(payload, media);
   } else {
-    const [articles, events, youtube] = await Promise.all([
-      payload.find({
-        collection: "articles",
-        where: { status: { equals: "published" } },
-        sort: "-publishedAt",
-        limit: 6,
-      }),
-      payload.find({ collection: "events", sort: "startDate", limit: 4 }),
-      payload.find({ collection: "youtube-videos", sort: "order", limit: 4 }),
-    ]);
-    relations = {
-      articleIds: articles.docs.map((doc) => Number(doc.id)),
-      eventIds: events.docs.map((doc) => Number(doc.id)),
-      youtubeIds: youtube.docs.map((doc) => Number(doc.id)),
-    };
-
-    if (relations.youtubeIds.length === 0) {
-      const synced = await syncPeterYoutubeVideos(payload);
-      relations.youtubeIds = synced.ids;
-    }
+    relations = await loadRelationIds(payload);
+    backfilledCollections = await seedMissingCollections(payload, media);
   }
 
   await seedGlobals(payload, media, relations);
+
+  const servicesCount = await collectionCount(payload, "services");
 
   return {
     admin,
     replace,
     collectionsSeeded: shouldSeedCollections,
+    backfilledCollections,
+    services: servicesCount,
     articles: relations.articleIds.length,
     events: relations.eventIds.length,
     youtubeVideos: relations.youtubeIds.length,

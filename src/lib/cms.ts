@@ -245,7 +245,8 @@ export async function getServices(): Promise<Service[]> {
       depth: 1,
     });
     return res.docs as Service[];
-  } catch {
+  } catch (error) {
+    console.error("getServices failed:", error);
     return [];
   }
 }
