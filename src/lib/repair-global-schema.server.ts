@@ -287,6 +287,43 @@ export async function repairSqlitePushFailure(
   return { applied: actions.length > 0, actions };
 }
 
+async function migrateUniversityProfileColumn(client: Client): Promise<void> {
+  if (!(await tableExists(client, "site_settings"))) return;
+
+  const siteInfo = await client.execute(`PRAGMA table_info(\`site_settings\`)`);
+  const siteColumns = new Set(
+    siteInfo.rows.map((row) => String(row.name)),
+  );
+  if (!siteColumns.has("university_profile_url")) return;
+
+  if (await tableExists(client, "about_page")) {
+    const aboutInfo = await client.execute(`PRAGMA table_info(\`about_page\`)`);
+    const aboutColumns = new Set(
+      aboutInfo.rows.map((row) => String(row.name)),
+    );
+    if (!aboutColumns.has("university_profile_url")) {
+      await client.execute(
+        `ALTER TABLE \`about_page\` ADD COLUMN university_profile_url TEXT`,
+      );
+    }
+    await client.execute(`
+      UPDATE \`about_page\`
+      SET university_profile_url = (
+        SELECT university_profile_url FROM \`site_settings\` LIMIT 1
+      )
+      WHERE university_profile_url IS NULL OR university_profile_url = ''
+    `);
+  }
+
+  try {
+    await client.execute(
+      `ALTER TABLE \`site_settings\` DROP COLUMN university_profile_url`,
+    );
+  } catch {
+    /* SQLite version may not support DROP COLUMN */
+  }
+}
+
 export async function repairGlobalSchemaBeforePush(): Promise<{
   database: "sqlite" | "postgres" | "skipped";
   homepageColumnsAdded: number;
@@ -352,6 +389,7 @@ export async function repairGlobalSchemaBeforePush(): Promise<{
     RESOURCES_PAGE_COLUMNS,
   );
   await addMissingColumns(client, "services", SERVICES_COLLECTION_COLUMNS);
+  await migrateUniversityProfileColumn(client);
   const indexesDropped = await dropAllUserIndexes(client);
 
   return {

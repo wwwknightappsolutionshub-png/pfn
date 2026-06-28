@@ -1,6 +1,6 @@
-import { pushDevSchema } from "@payloadcms/drizzle";
 import type { DrizzleAdapter } from "@payloadcms/drizzle/types";
 import type { Payload } from "payload";
+import { pushDevSchemaNonInteractive } from "@/lib/push-dev-schema-noninteractive";
 import {
   repairGlobalSchemaBeforePush,
   repairSqlitePushFailure,
@@ -25,6 +25,8 @@ export async function runDbPushSchemaWithPayload(payload: Payload): Promise<{
   pushRepairs: string[];
 }> {
   process.env.PAYLOAD_FORCE_DRIZZLE_PUSH = "true";
+  process.env.PAYLOAD_AUTO_ACCEPT_SCHEMA_PUSH =
+    process.env.PAYLOAD_AUTO_ACCEPT_SCHEMA_PUSH ?? "true";
 
   const repair = await repairGlobalSchemaBeforePush();
   const pushRepairs: string[] = [];
@@ -33,7 +35,7 @@ export async function runDbPushSchemaWithPayload(payload: Payload): Promise<{
   while (pushAttempts < MAX_PUSH_ATTEMPTS) {
     pushAttempts++;
     try {
-      await pushDevSchema(payload.db as DrizzleAdapter);
+      await pushDevSchemaNonInteractive(payload.db as DrizzleAdapter);
       break;
     } catch (error) {
       if (pushAttempts >= MAX_PUSH_ATTEMPTS) {
