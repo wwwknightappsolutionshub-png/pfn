@@ -49,20 +49,34 @@ export const AboutPage: GlobalConfig = {
     {
       name: "speakingMinistryTitle",
       type: "text",
-      defaultValue: "Speaking Ministry",
+      defaultValue: "Speaking & Teaching Ministry",
+      admin: {
+        description:
+          "Title for the first ministries column (speaking and teaching content appear together).",
+      },
     },
     {
       name: "speakingMinistry",
       type: "richText",
+      label: "Speaking ministry copy",
     },
     {
       name: "teachingMinistryTitle",
       type: "text",
       defaultValue: "Teaching Ministry",
+      admin: {
+        description:
+          "Legacy field — teaching copy is shown under Speaking & Teaching Ministry on the site.",
+      },
     },
     {
       name: "teachingMinistry",
       type: "richText",
+      label: "Teaching ministry copy",
+      admin: {
+        description:
+          "Shown below speaking copy in the Speaking & Teaching Ministry column.",
+      },
     },
     {
       name: "academicProfileTitle",

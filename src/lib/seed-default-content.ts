@@ -129,7 +129,7 @@ export const SEED_ABOUT_PAGE = {
   scriptureReference: "1 Timothy 4:7–8",
   biographySectionLabel: "Biography",
   ministriesSectionLabel: "Ministries",
-  speakingMinistryTitle: "Speaking Ministry",
+  speakingMinistryTitle: "Speaking & Teaching Ministry",
   teachingMinistryTitle: "Teaching Ministry",
   academicProfileTitle: "Academic Profile",
   academicJourneyTitle: "Academic Journey",
