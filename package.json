@@ -21,7 +21,7 @@
     "db:push-schema:api": "node scripts/push-db-schema.mjs",
     "db:init": "node --import tsx scripts/init-sqlite-db.mjs",
     "seed:content": "node --import tsx scripts/seed-content-cli.mjs",
-    "seed:content:api": "node scripts/seed-content.mjs",
+    "seed:content:api": "node scripts/seed-content.mjs"
   },
   "dependencies": {
     "@payloadcms/db-postgres": "^3.85.0",
