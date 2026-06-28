@@ -1,3 +1,4 @@
+import { createClient, type Client } from "@libsql/client";
 import path from "path";
 
 type ColumnDef = readonly [string, string];
