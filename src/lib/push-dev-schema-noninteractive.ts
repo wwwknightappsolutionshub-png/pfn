@@ -2,7 +2,7 @@ import type { DrizzleAdapter } from "@payloadcms/drizzle/types";
 
 type SchemaPushAdapter = DrizzleAdapter & {
   extensions?: { postgis?: boolean };
-  tablesFilter?: string;
+  tablesFilter?: string[];
 };
 
 /**
@@ -62,10 +62,18 @@ export async function pushDevSchemaNonInteractive(
   const devPush = result.rows;
 
   if (!devPush.length) {
-    await drizzle.insert(adapter.tables.payload_migrations).values({
-      name: "dev",
-      batch: -1,
-    });
+    await (
+      drizzle as {
+        insert: (table: typeof adapter.tables.payload_migrations) => {
+          values: (row: { name: string; batch: number }) => Promise<unknown>;
+        };
+      }
+    )
+      .insert(adapter.tables.payload_migrations)
+      .values({
+        name: "dev",
+        batch: -1,
+      });
   } else {
     await adapter.execute({
       drizzle,
